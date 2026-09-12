@@ -354,23 +354,47 @@ configuration file for each of the 44 nodes, is in
 | `PC4`, `PC9` | DHCP `.21+` | 50 | Branch guests — isolated |
 | `PC-DMZ` | DHCP `.21+` | 60 | DMZ maintenance host |
 
-## 2.3 Service mapping
+## 2.3 Service mapping — the ten required configurations
 
-**Table 5 — Required services and where each is implemented**
+Part A requires ten configurations. Each one below states where it is implemented, on
+which devices, and which evidence slot proves it. This table is the spine of the
+report: §4 gives a configuration excerpt per row, §6 gives a verification section per
+row, and the sign-off matrix in
+[`verification/CHECKS.md`](../verification/CHECKS.md) §11 closes each one out.
 
-| Service | Implementation | Evidence |
-|---------|----------------|----------|
-| VLANs | 7 data VLANs; VLAN 1 unused; all data tagged | `SS-04`, `SS-05` |
-| Inter-VLAN routing | 802.1Q router-on-a-stick on four routers, seven subinterfaces | `SS-06` |
-| OSPF | Process 1, areas 0/10/20/30, 5 adjacencies, MD5 on area 0 | `SS-07`–`SS-09` |
-| DHCP | 6 pools on 3 routers, with gateway, DNS, domain and option 42 | `SS-13`–`SS-16` |
-| SSH | SSHv2, local AAA, `ACL_VTY` on both VTY ranges | `SS-27`, `SS-28` |
-| ACLs | 6 named ACLs at 7 enforcement points | `SS-22`–`SS-26`, `SS-29` |
-| NAT | PAT for four zones plus two static port translations | `SS-30`–`SS-33` |
-| DNS | `dnsmasq`, authoritative + forwarding, with PTR records | `SS-34`, `SS-35` |
-| NTP | `chrony` stratum 10; routers at stratum 11 | `SS-36` |
-| Syslog | `rsyslog`, per-device files, loopback-sourced | `SS-37`, `SS-38` |
-| Linux automation server | `AUTO-SRV` with Ansible, Netmiko, loopback inventory | `SS-39` |
+**Table 5 — The ten required services**
+
+| # | Service | Implementation | Devices | Evidence |
+|--:|---------|----------------|---------|----------|
+| 1 | **VLANs** | 7 data VLANs, all carried tagged; VLAN 1 deliberately unused | 17 switches | `SS-04`, `SS-05` |
+| 2 | **Inter-VLAN routing** | 802.1Q router-on-a-stick, 7 subinterfaces | `HQ-DIST`, `DC-EDGE`, `BR-EDGE`, `FW-EDGE` | `SS-06` |
+| 3 | **OSPF** | Process 1, areas 0/10/20/30, 5 adjacencies, one ASBR, three ABRs | all 5 routers | `SS-07`, `SS-08`, `SS-10`–`SS-12` |
+| 4 | **DHCP** | 6 pools with gateway, DNS server, domain name, option 42 and per-scope leases | `HQ-DIST`, `DC-EDGE`, `FW-EDGE` | `SS-13`–`SS-16` |
+| 5 | **SSH** | SSHv2 only, local AAA, `transport input ssh`, source-restricted VTY | all 5 routers | `SS-27`, `SS-28` |
+| 6 | **ACLs** | 6 named ACLs at 7 enforcement points, all with logged denials | all 5 routers | `SS-22`–`SS-26`, `SS-29` |
+| 7 | **NAT** | PAT for four zones, plus two static port translations publishing DMZ services | `FW-EDGE` | `SS-30`–`SS-33` |
+| 8 | **DNS** | `dnsmasq` authoritative for `corp.local` and forwarding; all 5 routers are clients | `DNS` + all 5 routers | `SS-34`, `SS-35` |
+| 9 | **NTP** | `chrony` `local stratum 10`; routers synchronise at stratum 11 | `NTP` + all 5 routers | `SS-36` |
+| 10 | **Syslog** | `rsyslog` on UDP/TCP 514; all 5 routers export, sourced from `Loopback0` | `SYSLOG` + all 5 routers | `SS-37`, `SS-38` |
+
+The brief also requires a **Linux automation server**, provided by `AUTO-SRV`
+(`10.10.99.10`) with Ansible and Netmiko installed and all five routers in its
+inventory (`SS-39`). It is a Part A deliverable in its own right and the Part B control
+node.
+
+### Enhancements beyond the required ten
+
+Three things in the configuration are **not** Part A requirements. They are recorded
+here so they are not mistaken for scope, and they are not argued for at length anywhere
+in this report:
+
+| Enhancement | What it adds | Where |
+|-------------|--------------|-------|
+| OSPF area 0 MD5 authentication | Prevents an unauthorised device on a WAN segment injecting LSAs. Adopted because the backbone has a redundant path and the cost was one line per interface | `configs/*.cfg`, `router ospf 1` |
+| Redundant WAN with cost engineering | Layer 3 resilience for the Branch, and it keeps the ACL enforcement point in the normal path | `HQ-CORE Fa3/0`, `BR-EDGE Fa2/0` |
+| CBAC stateful inspection | Would replace the stateless return-traffic matching at the perimeter. **Supplied commented-out and not enabled** | `configs/FW-EDGE.cfg` |
+
+Each is a single-line mention in the discussion (§7) and nothing more.
 
 ---
 
@@ -424,10 +448,22 @@ explicitly not claimed as verified.
 # 4. Device Configurations
 
 Complete, validated configurations are in [`configs/`](../configs/) and reproduced in
-Appendix A. Selected excerpts follow, chosen because each carries a decision that is
-not obvious from reading the command.
+Appendix A. The excerpts below are organised to follow Table 5 — **one subsection per
+required service** — and each is chosen because it carries a decision that is not
+obvious from reading the command.
 
-## 4.1 Inter-VLAN routing — `HQ-DIST`
+| § | Required service |
+|---|------------------|
+| 4.1 | VLANs and inter-VLAN routing (1, 2) |
+| 4.2 | OSPF (3) |
+| 4.3 | DHCP (4) |
+| 4.4 | SSH (5) |
+| 4.5 | ACLs (6) |
+| 4.6 | NAT (7) |
+| 4.7 | DNS, NTP and Syslog (8, 9, 10) |
+| 4.8 | Mechanical validation of all of the above |
+
+## 4.1 VLANs and inter-VLAN routing — `HQ-DIST`
 
 ```
 interface FastEthernet2/0
@@ -442,29 +478,119 @@ interface FastEthernet2/0.10
  no ip redirects
 ```
 
-One physical port carries three VLANs. `no ip proxy-arp` prevents a host being
-tricked into using the router as a relay for off-subnet addresses; the ACL is applied
-inbound so denied traffic is dropped at the first Layer 3 hop.
+One physical port carries three VLANs. The seven data VLANs are all carried **tagged**
+with VLAN 1 left unused, which removes the native-VLAN mismatch class of fault: a
+router subinterface accepts only tagged frames, so anything arriving untagged is
+discarded rather than silently joining the wrong VLAN. `no ip proxy-arp` prevents a
+host being tricked into using the router as a relay for off-subnet addresses; the ACL
+is applied inbound so denied traffic is dropped at the first Layer 3 hop.
 
-## 4.2 OSPF with authenticated backbone — `HQ-CORE`
+The same pattern provides the other three gateways — `DC-EDGE Fa3/0.30` (VLAN 30),
+`BR-EDGE Fa3/0.40/.50` (VLANs 40, 50) and `FW-EDGE Fa2/0.60` (VLAN 60) — so all seven
+VLANs are routed by four routers over four trunks.
+
+## 4.2 OSPF — `HQ-CORE`
 
 ```
 router ospf 1
  router-id 1.1.1.1
- area 0 authentication message-digest
  passive-interface default
  no passive-interface FastEthernet0/0
- ...
+ no passive-interface FastEthernet1/0
+ no passive-interface FastEthernet2/0
+ no passive-interface FastEthernet3/0
  network 1.1.1.1 0.0.0.0 area 0
+ network 10.255.0.0 0.0.0.3 area 0
+ network 10.255.0.8 0.0.0.3 area 0
+ network 10.255.0.16 0.0.0.3 area 0
  network 10.255.0.20 0.0.0.3 area 0
 ```
 
-`passive-interface default` with explicit exceptions means hellos are sent only where
-a neighbour is expected, so no host segment can form an adjacency. Authentication is
-applied **per area**, not per interface, so a future backbone link cannot come up
-unauthenticated by omission.
+Multi-area OSPF with four areas: 0 for the backbone, and 10, 20, 30 for the three
+sites. `HQ-DIST`, `DC-EDGE` and `BR-EDGE` are ABRs; `FW-EDGE` is the single ASBR and the
+only originator of the default route.
 
-## 4.3 Guest containment — `BR-EDGE`
+`passive-interface default` with explicit exceptions is the decision worth noting:
+hellos are sent only on the four WAN links where a neighbour is expected, so no user,
+server, guest or DMZ segment can form an adjacency. The VLAN prefixes are still
+advertised — what is suppressed is neighbour formation, not reachability.
+
+*(Enhancement, not a requirement: `area 0 authentication message-digest` with a
+per-interface MD5 key is also configured on all five routers.)*
+
+## 4.3 DHCP — `BR-EDGE`
+
+```
+ip dhcp excluded-address 10.30.40.1 10.30.40.20
+ip dhcp excluded-address 10.30.50.1 10.30.50.20
+!
+ip dhcp pool VLAN40_BR_STAFF
+ network 10.30.40.0 255.255.255.0
+ default-router 10.30.40.1
+ dns-server 10.20.30.10
+ domain-name corp.local
+ option 42 ip 10.20.30.11
+ lease 2
+!
+ip dhcp pool VLAN50_BR_GUEST
+ network 10.30.50.0 255.255.255.0
+ default-router 10.30.50.1
+ dns-server 10.20.30.10
+ domain-name guest.corp.local
+ lease 0 4
+```
+
+Six pools across three routers. Every pool excludes `.1`–`.20`, so a static server
+address and a DHCP lease can never collide and every lease begins at `.21`.
+
+The two pools above are deliberately different, and each difference is a control. The
+guest scope carries a four-hour lease instead of two days, matching transient visitor
+devices so the pool is not exhausted by devices that have left. It advertises
+`guest.corp.local` instead of `corp.local`, which makes a guest lease self-evident from
+the client side — the cheapest available proof that scope separation works, visible in
+`show ip` without touching a router. And it omits option 42, because guests have no
+reason to be handed the enterprise time source.
+
+Two pools are notable for what they do **not** serve. There is no pool on VLAN 99: the
+management VLAN is static-only by design, because it is the one subnet `ACL_VTY` trusts,
+and a pool there would automatically address an unknown host into it. And
+`VLAN30_DC_SERVERS` is expected to show zero leases, since all five Data Centre servers
+are static — it exists for the staging ports on `SW-DC-2`.
+
+## 4.4 SSH — all five routers
+
+```
+ip domain-name corp.local
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 2
+username admin privilege 15 secret Cisco123!
+!
+line vty 0 4
+ access-class ACL_VTY in
+ exec-timeout 10 0
+ login local
+ transport input ssh
+!
+line vty 5 15
+ access-class ACL_VTY in
+ exec-timeout 10 0
+ login local
+ transport input ssh
+```
+
+`transport input ssh` disables Telnet outright rather than merely deprioritising it, so
+credentials never cross the WAN in clear text. Both VTY ranges are guarded: IOS provides
+sixteen lines, so protecting only `0 4` leaves a sixth concurrent session unfiltered —
+a control that appears applied and is bypassable under load [8].
+
+One step cannot be configured here. `crypto key generate rsa` is an exec-mode command,
+so the RSA host key is generated once per router after boot; until it is,
+`show ip ssh` reports `SSH Disabled` and every SSH attempt fails regardless of the
+ACLs. Re-applying a startup configuration does not restore it, because key material is
+not part of the configuration.
+
+## 4.5 ACLs — `BR-EDGE` guest containment
 
 ```
 ip access-list extended ACL_GUEST_IN
@@ -481,11 +607,32 @@ ip access-list extended ACL_GUEST_IN
  deny   ip any any log
 ```
 
-Every zone is denied *by name*, including the guest VLAN's own zone — which blocks a
-guest reaching the Branch staff VLAN while leaving guest-to-guest traffic, which is
+Six named ACLs are applied at seven enforcement points; this is the most instructive of
+them. Every zone is denied *by name*, including the guest VLAN's own zone — which blocks
+a guest reaching the Branch staff VLAN while leaving guest-to-guest traffic, which is
 switched and never reaches the router, unaffected.
 
-## 4.4 NAT: outbound PAT and inbound publishing — `FW-EDGE`
+Entry order is the design, not an accident. The DHCP permit — which must source from
+`any`, because a DISCOVER originates from `0.0.0.0` [5] — and the DNS permits sit
+**above** the deny rules. Move them below and the guest network is dead rather than
+restricted: no address, no name resolution. The list closes with an explicit
+`deny ip any any log`, so the implicit deny never decides policy and every drop is
+counted and logged.
+
+**Table 6 — The six ACLs and their enforcement points**
+
+| ACL | Device | Applied to | Purpose |
+|-----|--------|-----------|---------|
+| `ACL_OUTSIDE_IN` | `FW-EDGE` | `Fa0/0` in | Perimeter allow-list: anti-spoofing, two published services, closing deny |
+| `ACL_DMZ_IN` | `FW-EDGE` | `Fa2/0.60` in | DMZ cannot initiate a session into any trusted zone |
+| `ACL_WAN_BR_IN` | `DC-EDGE` | `Fa1/0` in | Guest containment on the primary WAN path |
+| `ACL_WAN_BR_IN` | `HQ-CORE` | `Fa3/0` in | Same policy on the backup WAN path |
+| `ACL_GUEST_IN` | `BR-EDGE` | `Fa3/0.50` in | First-hop guest containment |
+| `ACL_HQ_USERS_IN` | `HQ-DIST` | `Fa2/0.10` in | HQ users cannot reach the management VLAN |
+| `ACL_VTY` | all 5 | `line vty 0 4`, `5 15` | Administrative SSH from two named hosts plus a break-glass subnet |
+| `ACL_NAT` | `FW-EDGE` | NAT source list | PAT scope — four zones, WAN transit excluded |
+
+## 4.6 NAT: outbound PAT and inbound publishing — `FW-EDGE`
 
 ```
 ip nat inside source list ACL_NAT interface FastEthernet0/0 overload
@@ -514,32 +661,52 @@ address can never match. The `bootps → bootpc` permit is equally load-bearing:
 closing deny, the DHCP offer that gives the outside interface its address is itself
 unsolicited inbound traffic.
 
-## 4.5 Management plane — all five routers
+## 4.7 DNS, NTP and Syslog — all five routers
+
+The three infrastructure services are configured together because they share one design
+decision, and because each depends on the one before it.
 
 ```
-ip access-list extended ACL_VTY
- permit tcp host 10.10.99.10 any eq 22
- permit tcp host 10.10.99.11 any eq 22
- permit tcp 10.20.30.0 0.0.0.255 any eq 22
- deny   ip any any log
+ip name-server 10.20.30.10
+ip domain-lookup
+ip domain-lookup source-interface Loopback0
 !
-line vty 0 4
- access-class ACL_VTY in
- transport input ssh
+ntp server 10.20.30.11 prefer
+ntp source Loopback0
 !
-line vty 5 15
- access-class ACL_VTY in
- transport input ssh
+service timestamps log datetime msec localtime show-timezone
+clock timezone AEST 10 0
+logging trap informational
+logging origin-id hostname
+logging source-interface Loopback0
+logging host 10.20.30.12
 ```
 
-Administration is restricted to two named hosts plus a break-glass subnet, and both
-VTY ranges are guarded — IOS provides sixteen lines, so protecting only `0 4` leaves a
-sixth concurrent session unfiltered [8]. Refusals are logged, because a refused
-administrative attempt is the most useful line in the log. Time and logging are
-sourced from `Loopback0` on every device, giving one stable identity per router for
-correlation [6], [7].
+**All three are sourced from `Loopback0`.** That single choice gives every router one
+stable identity across all three services: the query, the time request and the log entry
+all arrive from the same address regardless of which interface the packet left by. It
+matters most on `BR-EDGE`, which has two WAN paths and would otherwise log under two
+different addresses depending on the failover state.
 
-## 4.6 Mechanical validation
+**They form a dependency chain, not three independent boxes.** Centralised logging is
+only useful if entries from five devices can be ordered, which requires comparable
+timestamps, which requires a common clock. So `clock timezone`,
+`service timestamps log datetime msec localtime show-timezone` and the NTP client are
+all prerequisites for the logging evidence [6], [7]. Getting the NTP client right and
+omitting `service timestamps` — which is what the reviewed configuration did — produces
+correct clocks and log entries carrying only an uptime counter.
+
+Server side: `DNS` runs `dnsmasq` authoritative for `corp.local` with forward and
+reverse records for all five routers, nine servers and seven gateways, forwarding
+everything else upstream. `NTP` runs `chrony` as `local stratum 10`, which makes it
+authoritative with no Internet reachability so the lab is demonstrable offline —
+routers therefore synchronise at **stratum 11**, one level below, which is the correct
+expected value rather than an error. `SYSLOG` runs `rsyslog` on UDP and TCP 514, writing
+one file per sending device plus a single merged time-ordered file, because correlating
+an ACL denial on `BR-EDGE` with the OSPF adjacency change on `DC-EDGE` that caused it is
+far easier in one stream than across five.
+
+## 4.8 Mechanical validation
 
 `python3 scripts/validate_configs.py` asserts the properties that fail silently on
 this platform: interface names that exist on a c7200 with slots 0–3, one block per
@@ -561,7 +728,7 @@ critical findings are summarised here because each is instructive.
 ## 5.1 The published DMZ service could not receive a packet
 
 Two independent faults. The access list permitted inbound traffic to `10.60.60.10`,
-which can never match because the ACL is evaluated before translation (§4.4); and no
+which can never match because the ACL is evaluated before translation (§4.6); and no
 static translation existed to map the outside address to the DMZ host. Inbound
 publishing is the only NAT behaviour beyond outbound PAT, so the NAT requirement
 rested on a path that could not carry traffic. The TCP 443 permit was *removed* rather
@@ -610,18 +777,26 @@ follows the packet rather than the path.
 The plan is ordered by dependency: an OSPF fault invalidates every reachability result
 after it, and a DHCP fault invalidates every host test.
 
-| § | Area | Proves |
-|---|------|--------|
-| 0 | Pre-flight | Validator passes; correct config revision live; loop links removed |
-| 1 | Interfaces | Addressing matches design; standby ports down by design |
-| 2 | VLANs | Tagged traffic per VLAN; inter-VLAN routing |
-| 3 | OSPF | 5 adjacencies FULL; correct ABR/ASBR roles; MD5; one default; primary path preferred |
-| 4 | DHCP | Six pools; correct options; distinct guest and DMZ scopes |
-| 5 | Reachability | All zones; path traverses the Data Centre as designed |
-| 6 | Security | Guest, DMZ and management isolation enforced **and logged** |
-| 7 | NAT | Outbound PAT sharing one address; both inbound services reachable |
-| 8 | Services | DNS, NTP, Syslog, automation server |
-| 9 | Resilience | Failover to the backup WAN, and failback |
+**Table 7 — Verification coverage of the ten required services**
+
+| Service | Plan § | Proves | Evidence |
+|---------|--------|--------|----------|
+| **VLANs** (1) | 2.1–2.3, 2.5 | Each VLAN carries tagged traffic; VLAN 1 unused | `SS-04`, `SS-05` |
+| **Inter-VLAN routing** (2) | 2.4, 5.1 | Traffic routed between VLANs and across sites | `SS-06`, `SS-17` |
+| **OSPF** (3) | 3.1–3.2, 3.5–3.8 | 5 adjacencies FULL; correct ABR/ASBR roles; one default route; intended path preferred | `SS-07`, `SS-08`, `SS-10`–`SS-12` |
+| **DHCP** (4) | 4.1–4.8 | Six pools; correct options; distinct guest and DMZ scopes | `SS-13`–`SS-16` |
+| **SSH** (5) | 6.6–6.9 | Permitted from the two named hosts, refused **and logged** elsewhere; Telnet refused | `SS-27`, `SS-28` |
+| **ACLs** (6) | 6.1–6.5, 6.10 | Guest, DMZ and management isolation enforced, with deny counters | `SS-22`–`SS-26`, `SS-29` |
+| **NAT** (7) | 7.1–7.6 | Outbound PAT sharing one address; both published services reachable inbound | `SS-30`–`SS-33` |
+| **DNS** (8) | 8.1–8.3 | Names resolve from a router and a host; forward and reverse | `SS-34`, `SS-35` |
+| **NTP** (9) | 8.4–8.5 | All five routers synchronised at stratum 11, correct timezone | `SS-36` |
+| **Syslog** (10) | 8.6–8.7 | Five per-device senders, timestamped, containing the ACL denials from §6 | `SS-37`, `SS-38` |
+| Linux automation server | 8.8 | Ansible and Netmiko present, inventory reaches all five routers | `SS-39` |
+
+Three further sections support rather than duplicate these: §0 pre-flight (validator
+passes, correct configuration revision live, loop links removed), §1 interfaces
+(addressing matches the design), and §9 resilience (WAN failover and failback — an
+enhancement, not a required service).
 
 Three design choices produce the most valuable evidence:
 
@@ -662,19 +837,20 @@ containment control was written assuming a single WAN egress; the durable form o
 control applies at every interface a packet can arrive on, and the cost engineering is
 what keeps the intended path intended.
 
-The honest limitations are platform, not design. The switching layer offers no
-spanning tree, port security or link aggregation, so Layer 2 redundancy is impossible
-and the Layer 2 topology must be a loop-free tree by construction; redundancy
-therefore lives at Layer 3, which is where this design would place it in production
-regardless. The perimeter is an allow-list but a *stateless* one: return traffic is
-matched structurally rather than against a session table, so a crafted segment with
-the ACK bit set matches `established` without belonging to a session. CBAC would close
-that gap and is supplied as a commented, costed configuration block; it is not enabled
-because session tracking is expensive on emulated MIPS hardware shared with four other
-router instances [10]. Router-on-a-stick makes each site's inter-VLAN traffic share
-one 100 Mbit/s trunk that the router CPU forwards packet by packet — the production
-remedy is a Layer 3 switch, and the addressing and OSPF configuration transfer to it
-unchanged.
+The honest limitations are platform, not design. The switching layer offers no spanning
+tree, port security or link aggregation, so Layer 2 redundancy is impossible and the
+Layer 2 topology must be a loop-free tree by construction; redundancy therefore lives at
+Layer 3, which is where this design would place it in production regardless.
+Router-on-a-stick makes each site's inter-VLAN traffic share one 100 Mbit/s trunk that
+the router CPU forwards packet by packet — the production remedy is a Layer 3 switch, and
+the addressing and OSPF configuration transfer to it unchanged.
+
+Three enhancements sit outside the required ten and are noted rather than argued: OSPF
+area 0 MD5 authentication, the cost-engineered redundant WAN, and CBAC stateful
+inspection at the perimeter — the last supplied commented-out, since the filter as
+deployed matches return traffic structurally rather than against a session table, and
+session tracking is expensive on emulated hardware shared with four other router
+instances [10].
 
 Finally, the configurations were written for what comes next. Named access lists with
 remarks, a description on every interface naming both ends of its link, access lists
@@ -688,13 +864,15 @@ these properties so Part B inherits a package that is safe to generate.
 
 # 8. Conclusion
 
-Part A delivers a 44-node, four-zone enterprise network implementing all ten required
-services, exceeding the specified minimum in routers, switches and servers while
-justifying each addition by the policy or service it carries. Addressing is
-systematic, routing is multi-area and authenticated, segmentation is enforced at seven
-points with logged denials, and the Internet perimeter both translates outbound
-traffic for four zones and publishes two DMZ services inbound under an allow-list
-filter.
+Part A delivers a 44-node, four-zone enterprise network implementing **all ten required
+configurations** — VLANs, inter-VLAN routing, OSPF, DHCP, SSH, ACLs, NAT, DNS, NTP and
+Syslog — plus the required Linux automation server, exceeding the specified minimum in
+routers, switches and servers while justifying each addition by the policy or service it
+carries. Seven VLANs are routed over four 802.1Q trunks; OSPF runs multi-area across
+five routers with a single ASBR; six DHCP pools serve ten endpoints with full options;
+SSH is the only remote access path and is source-restricted on both VTY ranges; six ACLs
+are enforced at seven points with logged denials; and the perimeter both translates
+outbound traffic for four zones and publishes two DMZ services inbound.
 
 Twenty configuration defects were identified and corrected, four of them critical, and
 the properties that prevent their recurrence are now asserted by an automated

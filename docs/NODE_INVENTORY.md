@@ -47,7 +47,7 @@ Each runs a complete IOS startup configuration validated by
 |---------|:---------:|:---------:|:---------:|:---------:|:---------:|
 | Inter-VLAN routing (802.1Q) | VLAN 60 | — | VLAN 10/20/99 | VLAN 30 | VLAN 40/50 |
 | OSPF | ASBR a0 + a0 DMZ | a0 | ABR a0/a10 | ABR a0/a20 | ABR a0/a30 |
-| OSPF area 0 MD5 auth | yes | yes | yes | yes | yes |
+| OSPF area 0 MD5 auth *(enhancement)* | yes | yes | yes | yes | yes |
 | DHCP server | `VLAN60_DMZ` | — | `VLAN10`, `VLAN20` | `VLAN30` | `VLAN40`, `VLAN50` |
 | SSH v2 + `ACL_VTY` | yes | yes | yes | yes | yes |
 | NAT | PAT + 2 static | — | — | — | — |
@@ -235,13 +235,16 @@ site, same fabric, adjacent switches, opposite policy outcomes.
 
 ## 6. Requirement-to-node traceability
 
-Every Part A required service, and the specific nodes that implement it.
+The ten configurations Part A requires, and the specific nodes that implement each.
+Anything not in this table is either supporting infrastructure or an enhancement
+(OSPF MD5 authentication, the cost-engineered redundant WAN, and the commented-out CBAC
+block) rather than a rubric item.
 
 | Required service | Implemented on | Verified by |
 |------------------|----------------|-------------|
 | VLANs | 7 data VLANs across 17 switches (`ports_mapping.json`); VLAN 1 unused | `CHECKS.md` §2 |
 | Inter-VLAN routing | 802.1Q ROAS: `HQ-DIST Fa2/0.10/.20/.99`, `DC-EDGE Fa3/0.30`, `BR-EDGE Fa3/0.40/.50`, `FW-EDGE Fa2/0.60` | `CHECKS.md` §2, §5 |
-| OSPF | Process 1, areas 0/10/20/30, 5 routers, 5 adjacencies, MD5 on area 0, cost-engineered backup | `CHECKS.md` §3 |
+| OSPF | Process 1, areas 0/10/20/30, 5 routers, 5 adjacencies, one ASBR, three ABRs | `CHECKS.md` §3 |
 | DHCP | 6 pools on 3 routers serving 10 endpoints, with gateway, DNS, domain-name, option 42 and per-scope leases | `CHECKS.md` §4 |
 | SSH | SSHv2 + local AAA + `ACL_VTY` on both VTY ranges, all 5 routers; `AUTO-SRV` and `JUMP-SRV` as the only permitted origins | `CHECKS.md` §6.4 |
 | ACLs | 6 named ACLs at 7 enforcement points | `CHECKS.md` §6 |

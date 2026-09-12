@@ -5,6 +5,12 @@ Justification* criterion, and supplies the argument behind the *Topology & Desig
 criterion, by explaining each decision, the alternatives considered, and the
 trade-offs accepted.
 
+> **Scope.** Part A requires ten configurations: VLANs, inter-VLAN routing, OSPF, DHCP,
+> SSH, ACLs, NAT, DNS, NTP and Syslog. Those are what §2–§5 justify. Three items in the
+> build are **enhancements, not requirements** — OSPF area 0 MD5 authentication, the
+> cost-engineered redundant WAN, and the commented-out CBAC stateful-inspection block —
+> and are marked as such where they appear.
+
 Addressing is in [`IP_ADDRESSING.md`](IP_ADDRESSING.md); cabling in
 [`TOPOLOGY.md`](TOPOLOGY.md); per-node roles in
 [`NODE_INVENTORY.md`](NODE_INVENTORY.md); defects found during review in

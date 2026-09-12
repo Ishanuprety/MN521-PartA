@@ -17,6 +17,33 @@ the topology export.
 | **Medium** | Design weakness, unnecessary attack surface, or documentation that diverges from the built lab |
 | **Low** | Redundancy, imprecision or cosmetic inconsistency |
 
+## Which required service each finding affects
+
+Part A requires ten configurations: **VLANs, inter-VLAN routing, OSPF, DHCP, SSH, ACLs,
+NAT, DNS, NTP and Syslog**. Seventeen of the twenty findings restore or harden one of
+those ten. Three do not, and are listed separately so they are not mistaken for rubric
+items.
+
+| Required service | Findings that affected it |
+|------------------|---------------------------|
+| VLANs | [R-13](#r-13) DMZ trunk carried VLAN 60 untagged |
+| Inter-VLAN routing | [R-01](#r-01) `HQ-CORE Fa0/0` revision drift, [R-15](#r-15) duplicate interface blocks |
+| OSPF | [R-04](#r-04) two default originators, [R-05](#r-05) backup path preference |
+| DHCP | [R-08](#r-08) pool on the management VLAN |
+| SSH | [R-08](#r-08) `ACL_VTY` scope and unlogged denials, [R-15](#r-15) `line vty 5 15` unprotected |
+| ACLs | [R-03](#r-03), [R-06](#r-06), [R-07](#r-07), [R-10](#r-10) |
+| NAT | [R-03](#r-03) publishing path non-functional, [R-18](#r-18) WAN transit in scope |
+| DNS | [R-09](#r-09) forwarding loop, [R-10](#r-10) replies dropped, [R-11](#r-11) resolver disabled, [R-12](#r-12) install order |
+| NTP | [R-12](#r-12) `chrony` never installed |
+| Syslog | [R-14](#r-14) no timestamps, [R-12](#r-12) `rsyslog` never installed |
+| Topology integrity (prerequisite for all ten) | [R-02](#r-02) three Layer 2 loops |
+| Documentation accuracy | [R-17](#r-17), [R-20](#r-20) |
+
+**Not required — enhancements or accepted platform limits**, recorded for completeness
+and argued nowhere at length: OSPF area 0 MD5 authentication (adopted alongside
+[R-05](#r-05)), [R-16](#r-16) no STP or port security on the built-in switch, and
+[R-19](#r-19) stateless perimeter inspection with CBAC supplied commented-out.
+
 ---
 
 ## Summary

@@ -85,7 +85,7 @@ tick the box, and save the screenshot as `report/figures/SS-nn-<slug>.png`.
 |---|-------|-----------------|----------------|----|--------|
 | 3.1 | Adjacencies | each router: `show ip ospf neighbor` | **5 adjacencies total.** Neighbour counts: `HQ-CORE` 4, `DC-EDGE` 2, `BR-EDGE` 2, `FW-EDGE` 1, `HQ-DIST` 1. All in `FULL`. DR/BDR split is **not** a pass criterion — `FULL` is | `SS-07` | |
 | 3.2 | Router IDs and roles | each router: `show ip ospf` | `FW-EDGE` reports autonomous system boundary router; `HQ-DIST`, `DC-EDGE`, `BR-EDGE` report area border router; `HQ-CORE` reports **neither** (it is pure transit — if it reports ASBR, the superseded `default-information originate` is still present, R-04) | `SS-08` | |
-| 3.3 | Area 0 authentication | each router: `show ip ospf interface FastEthernet<n>` | `Message digest authentication enabled` on every area 0 interface. A one-sided key leaves the neighbour down with a mismatch log — see §10.2 | `SS-09` | |
+| 3.3 | Area 0 authentication *(enhancement, not a required service)* | each router: `show ip ospf interface FastEthernet<n>` | `Message digest authentication enabled` on every area 0 interface. A one-sided key leaves the neighbour down with a mismatch log — see §10.2 | `SS-09` | |
 | 3.4 | Passive interfaces | `HQ-DIST`, `DC-EDGE`, `BR-EDGE`, `FW-EDGE`: `show ip protocols` | Every LAN/DMZ subinterface and `Loopback0` is passive; WAN interfaces are not. An active LAN subinterface means hellos are leaking onto a user VLAN | — | |
 | 3.5 | One default route only | `HQ-DIST`, `DC-EDGE`, `BR-EDGE`: `show ip route 0.0.0.0` | Exactly **one** `O*E2 0.0.0.0/0`, advertised by router ID `4.4.4.4`. Two entries, or one from `1.1.1.1`, means R-04 has regressed | `SS-10` | |
 | 3.6 | Full routing table | `BR-EDGE`: `show ip route ospf` | All remote prefixes present: `10.10.10.0/24`, `10.10.20.0/24`, `10.10.99.0/24`, `10.20.30.0/24`, `10.60.60.0/24`, the WAN /30s, and the four remote loopbacks | `SS-11` | |
@@ -145,7 +145,7 @@ attributable: `clear ip access-list counters <name>`.
 | 6.8 | Telnet refused everywhere | any host: `telnet 1.1.1.1` | Refused — `transport input ssh` permits SSH only | — | |
 | 6.9 | Both VTY ranges guarded | each router: `show running-config \| section line vty` | `access-class ACL_VTY in` on **`line vty 0 4` and `line vty 5 15`**. R-15 | — | |
 | 6.10 | Anti-spoofing present | `FW-EDGE`: `show ip access-lists ACL_OUTSIDE_IN`, `show ip interface FastEthernet0/0 \| include access list` | ACL applied inbound; the five enterprise-zone deny entries present and first. Counters will typically be **zero** in a lab with no hostile traffic — this control is verified by presence and placement, which is the correct expectation to state rather than manufacturing hits | `SS-29` | |
-| 6.11 | CDP off where it should be | `FW-EDGE`, `BR-EDGE`: `show cdp interface` | `Fa0/0`, `Fa2/0.60` and `Fa3/0.50` absent from the list | — | |
+| 6.11 | CDP off where it should be *(enhancement)* | `FW-EDGE`, `BR-EDGE`: `show cdp interface` | `Fa0/0`, `Fa2/0.60` and `Fa3/0.50` absent from the list | — | |
 
 ---
 
@@ -179,6 +179,9 @@ attributable: `clear ip access-list counters <name>`.
 ---
 
 ## 9. Resilience
+
+> *Enhancement, not one of the ten required services. Included because the redundant
+> WAN exists and an untested failover path is worth less than no failover path.*
 
 | # | Check | Where / command | Pass criterion | SS | Result |
 |---|-------|-----------------|----------------|----|--------|
@@ -226,12 +229,15 @@ material is not part of the configuration.
 
 Each row maps a Part A required service to the checks that prove it.
 
+Rows 2–14 are the **ten required Part A configurations** plus the required Linux
+automation server. Rows 1 and 15 support them.
+
 | # | Requirement | Checks | Pass |
 |---|-------------|--------|------|
 | 1 | Topology built as designed, loop-free | §0.3, §1.1–1.3 | ☐ |
 | 2 | VLANs configured and carrying tagged traffic | §2.1–2.3, §2.5 | ☐ |
 | 3 | Inter-VLAN routing | §2.4, §5.1 | ☐ |
-| 4 | OSPF multi-area, correct roles, authenticated | §3.1–3.4 | ☐ |
+| 4 | OSPF multi-area, correct ABR/ASBR roles | §3.1–3.2, §3.4 | ☐ |
 | 5 | OSPF converged, single default, correct path preference | §3.5–3.8 | ☐ |
 | 6 | DHCP across six pools with full options | §4.1–4.8 | ☐ |
 | 7 | End-to-end reachability across all zones | §5 | ☐ |
@@ -242,7 +248,7 @@ Each row maps a Part A required service to the checks that prove it.
 | 12 | NTP | §8.4–8.5 | ☐ |
 | 13 | Syslog | §8.6–8.7 | ☐ |
 | 14 | Linux automation server | §8.8 | ☐ |
-| 15 | Redundancy demonstrated by failover | §9 | ☐ |
+| 15 | Redundancy demonstrated by failover *(enhancement)* | §9 | ☐ |
 
 ---
 
