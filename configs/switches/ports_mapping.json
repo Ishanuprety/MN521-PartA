@@ -1,0 +1,852 @@
+{
+  "SW-DMZ-1": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 60
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 60
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 60
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 60
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-HQ-DIST": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-HQ-1": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 10
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 99
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 99
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "dot1q",
+      "vlan": 1
+    }
+  ],
+  "SW-HQ-2": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 20
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-HQ-3": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 10
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-HQ-4": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 20
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "MGMT-SW": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "access",
+      "vlan": 99
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 99
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-DC-CORE": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-DC-1": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 30
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 30
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 30
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "dot1q",
+      "vlan": 1
+    }
+  ],
+  "SW-DC-2": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-DC-3": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 30
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-DC-4": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 30
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-BR-DIST": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-BR-1": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 40
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 40
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "dot1q",
+      "vlan": 1
+    }
+  ],
+  "SW-BR-2": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 50
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-BR-3": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 40
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ],
+  "SW-BR-4": [
+    {
+      "name": "Ethernet0",
+      "port_number": 0,
+      "type": "dot1q",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet1",
+      "port_number": 1,
+      "type": "access",
+      "vlan": 50
+    },
+    {
+      "name": "Ethernet2",
+      "port_number": 2,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet3",
+      "port_number": 3,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet4",
+      "port_number": 4,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet5",
+      "port_number": 5,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet6",
+      "port_number": 6,
+      "type": "access",
+      "vlan": 1
+    },
+    {
+      "name": "Ethernet7",
+      "port_number": 7,
+      "type": "access",
+      "vlan": 1
+    }
+  ]
+}

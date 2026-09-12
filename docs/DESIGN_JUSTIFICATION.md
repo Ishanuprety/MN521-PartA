@@ -1,23 +1,20 @@
-# Part A — Design Justification
+# Part A — Design Justification (FW / ISP / WAN update)
 
 ## Architecture
-Three-site hierarchical enterprise: Headquarters (users + Internet edge), Data Centre (shared services), and Branch Office. WAN is hub-and-spoke via DC as transit with OSPF multi-area (Area 0 backbone, Areas 10/20/30 per site) for scalable route control.
+Three-site hierarchical enterprise plus an **Internet edge / DMZ**:
+- **FW-EDGE** terminates Internet-NAT (via **ISP-Cloud** L2 transit), performs PAT, and hosts DMZ VLAN60.
+- **HQ-CORE** is the campus/WAN core (no longer DHCP/NAT to Internet). Fa0/0 is the /30 to FW; Fa3/0 is backup WAN via **WAN-Cloud**.
+- Primary WAN HQ↔DC↔BR; backup HQ↔BR over WAN-Cloud with higher OSPF cost (50).
 
-## Device choice (compatibility)
-- **Cisco c7200 Dynamips** (IOS 15.0 Adv Enterprise): already installed on the GNS3 VM; supports OSPF, DHCP, NAT, SSH, ACLs, subinterfaces (802.1Q), NTP client, Syslog. Fits Apple M3 Pro via GNS3 VM; avoids large x86 QEMU IOSv images that stress a 4 GB VM and limited free disk (~44 GB).
-- **GNS3 Ethernet switches**: VLAN access/trunk port mapping for inter-VLAN labs without IOU/L2 images.
-- **Ubuntu 22.04 Docker (arm64)**: AUTO-SRV (Ansible host for Part B), plus DNS/NTP/Syslog roles in DC — lightweight vs full QEMU VMs.
+## Device choice
+- Cisco c7200 Dynamips (slots 0–3 FE) for FW + four site routers.
+- GNS3 ethernet_switch fabric for VLANs (access/dot1q ports_mapping).
+- ISP-Cloud / WAN-Cloud as real L2 transit segments (addressing on attached router ifaces).
+- Ubuntu Docker for DNS/NTP/Syslog/FILE/MON/WEB/APP/AUTO/JUMP.
 
-## Services mapping
-| Requirement | Implementation |
-|-------------|----------------|
-| VLANs / Inter-VLAN | 802.1Q ROAS on HQ-DIST, DC-EDGE, BR-EDGE |
-| OSPF | Process 1, multi-area, loopback RIDs |
-| DHCP | Pools on HQ-DIST, DC-EDGE, BR-EDGE |
-| SSH | Local AAA, RSA keys, VTY ACL |
-| ACLs | VTY harden + guest isolation at branch/DC |
-| NAT | PAT on HQ-CORE Fa0/0 toward GNS3 NAT |
-| DNS / NTP / Syslog | DC servers 10.20.30.10–12; routers point to them |
+## NAT placement
+PAT moved from HQ-CORE to **FW-EDGE** Fa0/0 so the firewall owns outside policy and DMZ publishing (WEB :80/:443, APP :8080).
 
-## Scalability
-Addressing uses 10.0.0.0/8 site-aligned blocks; new branches add /24s and OSPF stub/NSSA areas without renumbering the core.
+## Loop avoidance
+GNS3 ethernet_switch has no STP. Dual ROAS attachments + access-switch cross-links create loops.
+Mitigation: HQ-DIST Fa1/0, DC-EDGE Fa2/0, BR-EDGE Fa1/0 administratively shut; ROAS only on DIST/CORE uplinks.
