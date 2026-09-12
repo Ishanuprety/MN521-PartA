@@ -1,0 +1,7 @@
+link,network,a_device,a_interface,a_address,b_device,b_interface,b_address,transit,ospf_area,ospf_cost
+Internet,GNS3 NAT pool,Internet-NAT,nat0,GNS3 managed,FW-EDGE,Fa0/0,DHCP,ISP-Cloud,,
+Edge-Core,10.255.0.16/30,FW-EDGE,Fa1/0,10.255.0.17,HQ-CORE,Fa0/0,10.255.0.18,direct,0,1
+Core-DC,10.255.0.0/30,HQ-CORE,Fa1/0,10.255.0.1,DC-EDGE,Fa0/0,10.255.0.2,direct,0,1
+Core-HQdist,10.255.0.8/30,HQ-CORE,Fa2/0,10.255.0.9,HQ-DIST,Fa0/0,10.255.0.10,direct,0,1
+DC-Branch primary,10.255.0.4/30,DC-EDGE,Fa1/0,10.255.0.5,BR-EDGE,Fa0/0,10.255.0.6,direct,0,1
+Core-Branch backup,10.255.0.20/30,HQ-CORE,Fa3/0,10.255.0.21,BR-EDGE,Fa2/0,10.255.0.22,WAN-Cloud,0,50

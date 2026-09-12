@@ -1,0 +1,9 @@
+vlan,name,subnet,gateway,gateway_interface,router,zone,ospf_area,addressing
+10,HQ_USERS,10.10.10.0/24,10.10.10.1,Fa2/0.10,HQ-DIST,Headquarters,10,DHCP
+20,HQ_CORP,10.10.20.0/24,10.10.20.1,Fa2/0.20,HQ-DIST,Headquarters,10,DHCP
+99,HQ_MGMT,10.10.99.0/24,10.10.99.1,Fa2/0.99,HQ-DIST,Headquarters,10,static only
+30,DC_SERVERS,10.20.30.0/24,10.20.30.1,Fa3/0.30,DC-EDGE,Data Centre,20,static + DHCP staging
+40,BR_STAFF,10.30.40.0/24,10.30.40.1,Fa3/0.40,BR-EDGE,Branch Office,30,DHCP
+50,BR_GUEST,10.30.50.0/24,10.30.50.1,Fa3/0.50,BR-EDGE,Branch Office,30,DHCP 4h lease
+60,DMZ,10.60.60.0/24,10.60.60.1,Fa2/0.60,FW-EDGE,DMZ,0,static + DHCP
+1,unused,,,,,,,deliberately empty

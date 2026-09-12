@@ -241,7 +241,7 @@ Every Part A required service, and the specific nodes that implement it.
 |------------------|----------------|-------------|
 | VLANs | 7 data VLANs across 17 switches (`ports_mapping.json`); VLAN 1 unused | `CHECKS.md` §2 |
 | Inter-VLAN routing | 802.1Q ROAS: `HQ-DIST Fa2/0.10/.20/.99`, `DC-EDGE Fa3/0.30`, `BR-EDGE Fa3/0.40/.50`, `FW-EDGE Fa2/0.60` | `CHECKS.md` §2, §5 |
-| OSPF | Process 1, areas 0/10/20/30, 5 routers, 6 adjacencies, MD5 on area 0, cost-engineered backup | `CHECKS.md` §3 |
+| OSPF | Process 1, areas 0/10/20/30, 5 routers, 5 adjacencies, MD5 on area 0, cost-engineered backup | `CHECKS.md` §3 |
 | DHCP | 6 pools on 3 routers serving 10 endpoints, with gateway, DNS, domain-name, option 42 and per-scope leases | `CHECKS.md` §4 |
 | SSH | SSHv2 + local AAA + `ACL_VTY` on both VTY ranges, all 5 routers; `AUTO-SRV` and `JUMP-SRV` as the only permitted origins | `CHECKS.md` §6.4 |
 | ACLs | 6 named ACLs at 7 enforcement points | `CHECKS.md` §6 |

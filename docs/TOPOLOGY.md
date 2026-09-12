@@ -228,7 +228,9 @@ graph TB
 ```
 
 Every non-backbone area attaches to area 0 through exactly one ABR, so no virtual
-link is needed. Six adjacencies exist in total, all on area 0, all MD5-authenticated.
+link is needed. **Five** adjacencies exist in total — one per area 0 link — all
+MD5-authenticated. Per-router neighbour counts: `HQ-CORE` 4, `DC-EDGE` 2,
+`BR-EDGE` 2, `FW-EDGE` 1, `HQ-DIST` 1, which sums to 10 endpoints for 5 adjacencies.
 
 ---
 

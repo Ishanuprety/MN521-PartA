@@ -1,0 +1,6 @@
+device,loopback0,ospf_router_id,loopback_area,ospf_role,also_used_for
+FW-EDGE,4.4.4.4/32,4.4.4.4,0,ASBR sole default originator,syslog/NTP/DNS source + Ansible target
+HQ-CORE,1.1.1.1/32,1.1.1.1,0,internal transit,syslog/NTP/DNS source + Ansible target
+HQ-DIST,1.1.1.4/32,1.1.1.4,10,ABR area 0/10,syslog/NTP/DNS source + Ansible target
+DC-EDGE,2.2.2.2/32,2.2.2.2,0,ABR area 0/20,syslog/NTP/DNS source + Ansible target
+BR-EDGE,3.3.3.3/32,3.3.3.3,30,ABR area 0/30,syslog/NTP/DNS source + Ansible target

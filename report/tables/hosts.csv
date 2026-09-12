@@ -1,0 +1,20 @@
+host,platform,address,vlan,gateway,zone,switch_port,service,config_artefact
+AUTO-SRV,Docker Ubuntu,10.10.99.10/24,99,10.10.99.1,Headquarters,SW-HQ-1 Eth2,Ansible + Netmiko automation server,configs/linux/auto-srv-setup.sh
+JUMP-SRV,Docker Ubuntu,10.10.99.11/24,99,10.10.99.1,Headquarters,MGMT-SW Eth1,SSH bastion,configs/linux/jump-srv-setup.sh
+DNS,Docker Ubuntu,10.20.30.10/24,30,10.20.30.1,Data Centre,SW-DC-1 Eth1,dnsmasq authoritative for corp.local,configs/linux/dns-setup.sh
+NTP,Docker Ubuntu,10.20.30.11/24,30,10.20.30.1,Data Centre,SW-DC-1 Eth2,chrony local stratum 10,configs/linux/ntp-setup.sh
+SYSLOG,Docker Ubuntu,10.20.30.12/24,30,10.20.30.1,Data Centre,SW-DC-1 Eth3,rsyslog UDP/TCP 514 collector,configs/linux/syslog-setup.sh
+FILE-SRV,Docker Ubuntu,10.20.30.13/24,30,10.20.30.1,Data Centre,SW-DC-3 Eth1,internal HTTP file share - not published,configs/linux/file-srv-setup.sh
+MON-SRV,Docker Ubuntu,10.20.30.14/24,30,10.20.30.1,Data Centre,SW-DC-4 Eth1,monitoring :9090 + estate sweep,configs/linux/mon-srv-setup.sh
+WEB-SRV,Docker Ubuntu,10.60.60.10/24,60,10.60.60.1,DMZ,SW-DMZ-1 Eth1,nginx TCP 80 published via static PAT,configs/linux/web-srv-setup.sh
+APP-SRV,Docker Ubuntu,10.60.60.11/24,60,10.60.60.1,DMZ,SW-DMZ-1 Eth2,app TCP 8080 published via static PAT,configs/linux/app-srv-setup.sh
+PC1,VPCS,DHCP,10,10.10.10.1,Headquarters,SW-HQ-1 Eth1,HQ user,configs/vpcs/PC1.txt
+PC2,VPCS,DHCP,20,10.10.20.1,Headquarters,SW-HQ-2 Eth1,HQ corporate,configs/vpcs/PC2.txt
+PC3,VPCS,DHCP,40,10.30.40.1,Branch Office,SW-BR-1 Eth1,Branch staff,configs/vpcs/PC3.txt
+PC4,VPCS,DHCP,50,10.30.50.1,Branch Office,SW-BR-2 Eth1,Branch guest - isolated,configs/vpcs/PC4.txt
+PC5,VPCS,DHCP,10,10.10.10.1,Headquarters,SW-HQ-3 Eth1,HQ user,configs/vpcs/PC5.txt
+PC6,VPCS,DHCP,40,10.30.40.1,Branch Office,SW-BR-3 Eth1,Branch staff,configs/vpcs/PC6.txt
+PC7,VPCS,DHCP,40,10.30.40.1,Branch Office,SW-BR-1 Eth3,Branch staff,configs/vpcs/PC7.txt
+PC8,VPCS,DHCP,20,10.10.20.1,Headquarters,SW-HQ-4 Eth1,HQ corporate,configs/vpcs/PC8.txt
+PC9,VPCS,DHCP,50,10.30.50.1,Branch Office,SW-BR-4 Eth1,Branch guest - isolated,configs/vpcs/PC9.txt
+PC-DMZ,VPCS,DHCP,60,10.60.60.1,DMZ,SW-DMZ-1 Eth3,DMZ maintenance host,configs/vpcs/PC-DMZ.txt

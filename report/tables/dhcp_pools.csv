@@ -1,0 +1,7 @@
+pool,router,network,excluded,default_router,dns_server,domain_name,option_42_ntp,lease,expected_clients
+VLAN10_HQ_USERS,HQ-DIST,10.10.10.0/24,.1-.20,10.10.10.1,10.20.30.10,corp.local,10.20.30.11,2 days,PC1 PC5
+VLAN20_HQ_CORP,HQ-DIST,10.10.20.0/24,.1-.20,10.10.20.1,10.20.30.10,corp.local,10.20.30.11,2 days,PC2 PC8
+VLAN30_DC_SERVERS,DC-EDGE,10.20.30.0/24,.1-.20,10.20.30.1,10.20.30.10,corp.local,10.20.30.11,7 days,none - zero leases expected
+VLAN40_BR_STAFF,BR-EDGE,10.30.40.0/24,.1-.20,10.30.40.1,10.20.30.10,corp.local,10.20.30.11,2 days,PC3 PC6 PC7
+VLAN50_BR_GUEST,BR-EDGE,10.30.50.0/24,.1-.20,10.30.50.1,10.20.30.10,guest.corp.local,none,4 hours,PC4 PC9
+VLAN60_DMZ,FW-EDGE,10.60.60.0/24,.1-.20,10.60.60.1,10.20.30.10,dmz.corp.local,none,8 hours,PC-DMZ

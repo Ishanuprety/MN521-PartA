@@ -1,6 +1,21 @@
-# LINK_MAP — MN521-PartA (from topology-export.json)
+# LINK_MAP — raw live export
 
-Source: evidence/topology-export.json (live snapshot). Adapter N on dynamips = FastEthernetN/0.
+**This is the unedited export from the live GNS3 project.** It is kept as-is because it
+is the record of what is actually cabled, which is what screenshots will show.
+
+For the interpreted, canonical topology — link IDs `L1`–`L50`, addressing, VLANs, OSPF
+areas and costs — use [`TOPOLOGY.md`](TOPOLOGY.md) §3. Where the two differ, this file
+describes the lab as found and `TOPOLOGY.md` describes the lab as designed.
+
+Three differences are deliberate and important:
+
+| Difference | Detail |
+|------------|--------|
+| `ISP-Cloud` and `WAN-Cloud` are missing from this export | Links 18 and 24 appear as direct router-to-router adjacencies. The hubs sit mid-path and some exports omit transparent L2 nodes as named endpoints. Inserting them splits those two links into four, which is how the 48 rows below reconcile to the 50 links in `TOPOLOGY.md` §6 |
+| Three links must be **deleted** | Rows 1, 4 and 5 each close a Layer 2 loop. See the annotation below and `REVIEW_FINDINGS.md` R-02 |
+| Three links are cabled but **held down** | Rows 11, 13 and 17 terminate on router ports that are administratively shut by design, not by omission |
+
+Adapter N on a dynamips node = `FastEthernetN/0`.
 
 | # | Node A | Interface | Node B | Interface | Role |
 |---|--------|-----------|--------|-----------|------|
@@ -53,14 +68,51 @@ Source: evidence/topology-export.json (live snapshot). Adapter N on dynamips = F
 | 47 | SW-BR-DIST | Eth5 | SW-BR-4 | Eth0 |  |
 | 48 | SW-BR-4 | Eth1 | PC9 | e0 |  |
 
-## Design note — ISP-Cloud / WAN-Cloud
+## Annotation — rows needing action
 
-Live node list includes **ISP-Cloud** (`cloud`) and **WAN-Cloud** (`ethernet_hub`).
-This export's link list shows **Internet-NAT↔FW-EDGE** and **HQ-CORE↔BR-EDGE** as direct adjacencies
-(hubs may be mid-path L2 transit without appearing as named endpoints in some exports, or need rewiring).
+### Rows to DELETE — each closes a Layer 2 loop
 
-**Intended functional roles (not decoration):**
-- `ISP-Cloud`: L2 transit Internet-NAT ↔ FW-EDGE Fa0/0 (DHCP/NAT outside on FW).
-- `WAN-Cloud`: L2 transit HQ-CORE Fa3/0 (10.255.0.21/30) ↔ BR-EDGE Fa2/0 (10.255.0.22/30).
+| Row | Link | Loop closed | Why it must go |
+|----:|------|-------------|----------------|
+| 1 | `SW-HQ-1 Eth7` ↔ `SW-HQ-2 Eth0` | with rows 26 and 39 via `SW-HQ-DIST` | The GNS3 built-in switch has **no STP**, so nothing breaks the loop |
+| 4 | `SW-DC-1 Eth7` ↔ `SW-DC-2 Eth0` | with rows 30 and 31 via `SW-DC-CORE` | as above |
+| 5 | `SW-BR-1 Eth7` ↔ `SW-BR-2 Eth0` | with rows 34 and 35 via `SW-BR-DIST` | as above |
 
-Addressing lives on the **router** interfaces attached to those segments.
+Deleting these disconnects nothing: `SW-HQ-2` keeps row 26, `SW-DC-2` keeps row 31 and
+`SW-BR-2` keeps row 35, each an uplink to its aggregation switch. A loop here presents
+as the whole GNS3 project becoming unresponsive rather than as an error, which is why
+it went unnoticed. Procedure: [`APPLY_STEPS.md`](APPLY_STEPS.md) §3.
+
+### Rows cabled but held administratively DOWN — by design
+
+| Row | Link | Router port state |
+|----:|------|-------------------|
+| 11 | `HQ-DIST Fa1/0` ↔ `SW-HQ-1 Eth0` | `shutdown` — `SW-HQ-1` is reached via `SW-HQ-DIST` (row 39) instead |
+| 13 | `DC-EDGE Fa2/0` ↔ `SW-DC-1 Eth0` | `shutdown` — `SW-DC-1` is reached via `SW-DC-CORE` (row 30) |
+| 17 | `BR-EDGE Fa1/0` ↔ `SW-BR-1 Eth0` | `shutdown` — `SW-BR-1` is reached via `SW-BR-DIST` (row 34) |
+
+These are pre-cabled standby paths: if an aggregation switch fails, bringing up the
+router port and moving the VLAN subinterfaces restores that access switch without
+recabling. **Do not delete them, and do not `no shutdown` them** — either would create
+the second loop, between a router's two attachments to the same access switch.
+
+### Rows where the transit hub is not shown
+
+| Row | Export shows | Actually traverses | Addressing |
+|----:|--------------|--------------------|------------|
+| 18 | `Internet-NAT nat0` ↔ `FW-EDGE Fa0/0` | `Internet-NAT` → **`ISP-Cloud`** → `FW-EDGE Fa0/0` | DHCP on `Fa0/0` (NAT outside) |
+| 24 | `HQ-CORE Fa3/0` ↔ `BR-EDGE Fa2/0` | `HQ-CORE Fa3/0` → **`WAN-Cloud`** → `BR-EDGE Fa2/0` | `10.255.0.20/30` — `.21` and `.22` |
+
+Both hubs are functional path segments, not decoration: `ISP-Cloud` models the ISP
+handoff and `WAN-Cloud` models a carrier Ethernet backup service. Because an Ethernet
+hub is transparent at Layer 2 and holds no address, the IP subnet spans it and OSPF
+forms a single adjacency across it — so **inserting a hub requires no configuration
+change on either router**. The `/30` mask does the real work of keeping the segment
+point-to-point: with only two host addresses, no third device can be addressed onto a
+shared segment that would otherwise flood to it.
+
+### Verify the current wiring
+
+`scripts/apply_on_mac.py` writes a fresh `LINK_MAP_LIVE.md` each run. Diff it against
+this file after the deletions in `APPLY_STEPS.md` §3 to confirm the topology matches
+[`TOPOLOGY.md`](TOPOLOGY.md) §3 — 44 forwarding links plus 3 held-down standby links.

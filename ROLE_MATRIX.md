@@ -1,8 +1,21 @@
 # ROLE_MATRIX — MN521-PartA (every node has a functional role)
 
+> **Quick reference.** For the full per-node breakdown — purpose, addressing, VLAN,
+> gateway, switch port and the specific configuration artefact implementing each of the
+> 44 nodes — see [`docs/NODE_INVENTORY.md`](docs/NODE_INVENTORY.md), which also argues
+> why each addition beyond the brief's 4/6/1 minimum carries capability.
+>
+> **Two corrections to the tables below**, both from the live topology export:
+>
+> - `HQ-CORE Fa0/0` is `10.255.0.18/30` to `FW-EDGE` and runs **no NAT**. PAT is on
+>   `FW-EDGE` only. A device still showing `ip nat outside` on `Fa0/0` is running a
+>   superseded config — see [`docs/REVIEW_FINDINGS.md`](docs/REVIEW_FINDINGS.md) R-01.
+> - `PC5` is on `SW-HQ-3` (VLAN 10) and `PC8` on `SW-HQ-4` (VLAN 20) — both at **HQ**,
+>   not the Branch. Branch endpoints are `PC3`, `PC6`, `PC7` (VLAN 40) and `PC4`, `PC9`
+>   (VLAN 50). See R-17 for the open decision.
+
 Creds: `admin` / `Cisco123!` (routers). Project configs root:
 `/Users/reckless/GNS3/projects/9c25a374-f40d-4407-a6c8-4cd996d061d0/configs/`
-Mirror: `/tmp/mn521-parta-clean/mn521-parta/` and box `/workspace/mn521-parta/`.
 
 ## Summary counts
 | Type | Count | Role |
