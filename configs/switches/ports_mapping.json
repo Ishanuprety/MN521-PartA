@@ -4,7 +4,7 @@
       "name": "Ethernet0",
       "port_number": 0,
       "type": "dot1q",
-      "vlan": 60
+      "vlan": 1
     },
     {
       "name": "Ethernet1",
@@ -460,19 +460,19 @@
       "name": "Ethernet1",
       "port_number": 1,
       "type": "access",
-      "vlan": 1
+      "vlan": 30
     },
     {
       "name": "Ethernet2",
       "port_number": 2,
       "type": "access",
-      "vlan": 1
+      "vlan": 30
     },
     {
       "name": "Ethernet3",
       "port_number": 3,
       "type": "access",
-      "vlan": 1
+      "vlan": 30
     },
     {
       "name": "Ethernet4",
