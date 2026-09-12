@@ -1,1 +1,6 @@
-ip dhcp
+# MN521 Part A - VPCS startup file for PC2
+# VLAN 20 - HQ corporate - 10.10.20.0/24 via SW-HQ-2 port 1
+# Address, gateway, DNS and NTP (option 42) all arrive via DHCP from the
+# local router; see verification/CHECKS.md section 3.2 for expected values.
+set pcname PC2
+ip dhcp -r
