@@ -39,7 +39,7 @@ the topology export.
 | [R-14](#r-14) | Medium | Evidence | No `service timestamps`, so syslog evidence had no timestamps | Fixed |
 | [R-15](#r-15) | Medium | Config quality | Duplicate interface blocks, unprotected `vty 5 15`, byte-identical duplicate config tree | Fixed |
 | [R-16](#r-16) | Medium | Platform | No STP, port security or LACP on GNS3 built-in switches | Accepted |
-| [R-17](#r-17) | Low | Docs | `PC5`/`PC8` documented at Branch but wired at HQ | Flagged for decision |
+| [R-17](#r-17) | Low | Docs | `PC5`/`PC8` documented at Branch but wired at HQ | **Resolved — keep at HQ as wired** |
 | [R-18](#r-18) | Low | Config | WAN transit included in the NAT scope | Fixed |
 | [R-19](#r-19) | Medium | Security | Stateless inspection at the Internet edge | Accepted, upgrade path documented |
 | [R-20](#r-20) | Medium | Requirements | No assessable report, and several rubric items had no artefact | Fixed |
@@ -624,29 +624,39 @@ boundary with a costed remedy rather than an omission.
 
 ---
 
-## Open item requiring a decision
-
 ### R-17
-**`PC5`/`PC8` documented at Branch but wired at HQ.** *(Low — flagged)*
+**`PC5`/`PC8` documented at Branch but wired at HQ.** *(Low — resolved: keep at HQ)*
 
 A briefing note described `PC5`–`PC9` as Branch hosts. The live topology export
 ([`LINK_MAP.md`](LINK_MAP.md) links 28 and 44) has `PC5` on `SW-HQ-3 Eth1` and `PC8`
 on `SW-HQ-4 Eth1`, both at HQ, and `ports_mapping.json` has those ports on VLAN 10
 and VLAN 20 respectively.
 
-The documentation follows the export, because that is what the screenshots will show.
-Two consistent options:
+**Decision: keep them at HQ, as wired.** Confirmed with the lab operator, so no
+recabling is required and no configuration changes: `PC5` takes a VLAN 10 lease and
+`PC8` a VLAN 20 lease from `HQ-DIST` automatically. The final endpoint distribution is:
 
-1. **Keep as wired** (current documentation). HQ has four endpoints across four
-   access switches; the Branch has five across four. No change to anything.
-2. **Move `PC5` and `PC8` to the Branch.** Recable to `SW-BR-3` and `SW-BR-4` in
-   GNS3. No router configuration changes: both would take a Branch scope by DHCP
-   automatically. Then update `NODE_INVENTORY.md` §5, `TOPOLOGY.md` §3.4 and
-   `configs/vpcs/README.md`.
+| Site | VLAN | Endpoints |
+|------|-----:|-----------|
+| HQ | 10 | `PC1` (`SW-HQ-1`), `PC5` (`SW-HQ-3`) |
+| HQ | 20 | `PC2` (`SW-HQ-2`), `PC8` (`SW-HQ-4`) |
+| Branch | 40 | `PC3`, `PC7` (`SW-BR-1`), `PC6` (`SW-BR-3`) |
+| Branch | 50 | `PC4` (`SW-BR-2`), `PC9` (`SW-BR-4`) |
+| DMZ | 60 | `PC-DMZ` (`SW-DMZ-1`) |
 
-Either is defensible. What is not defensible is changing only the document, which
-would reintroduce exactly the report-versus-lab divergence this register exists to
-eliminate.
+This distribution is what every document in the repository already states —
+`NODE_INVENTORY.md` §5, `TOPOLOGY.md` §3.4, `configs/vpcs/README.md`,
+`report/tables/hosts.csv` and `report/PartA_Report.md` Table 4 — so nothing needed
+changing beyond recording the decision here.
+
+It also happens to be the better arrangement for the evidence. Each site ends up with
+two endpoints per VLAN on **two different access switches**, so a DHCP screenshot
+proves the scope reaches a second access block rather than just a second port, and the
+Branch keeps its staff/guest split across four separate switches.
+
+The alternative was to move both to `SW-BR-3`/`SW-BR-4`. What would **not** have been
+acceptable is changing only the documents, which would have reintroduced exactly the
+report-versus-lab divergence this register exists to eliminate.
 
 ---
 

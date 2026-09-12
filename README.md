@@ -27,6 +27,7 @@ DNS, NTP, Syslog.
 | Know *why* it is built this way | [`docs/DESIGN_JUSTIFICATION.md`](docs/DESIGN_JUSTIFICATION.md) |
 | See what was broken and fixed | [`docs/REVIEW_FINDINGS.md`](docs/REVIEW_FINDINGS.md) |
 | Build or re-apply the lab | [`docs/APPLY_STEPS.md`](docs/APPLY_STEPS.md) |
+| Apply this branch into the live lab | [`docs/MAC_APPLY_HANDOFF.md`](docs/MAC_APPLY_HANDOFF.md) |
 | Test it | [`verification/CHECKS.md`](verification/CHECKS.md) |
 
 ## Repository layout
