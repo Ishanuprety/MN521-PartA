@@ -16,6 +16,7 @@ with Ansible/Netmiko.
 | [`docs/TOPOLOGY.md`](docs/TOPOLOGY.md) | Node inventory, mermaid diagram, routed/trunk/access link tables, GNS3 switch port matrix, traffic-flow summary |
 | [`docs/IP_ADDRESSING.md`](docs/IP_ADDRESSING.md) | Authoritative addressing plan — sites, VLANs, WAN /30s, per-interface addresses, loopbacks |
 | [`docs/DESIGN_JUSTIFICATION.md`](docs/DESIGN_JUSTIFICATION.md) | Why the design looks like this: architecture, platform choices on Apple silicon, routing, security, scalability analysis |
+| [`docs/GNS3_BUILD_NOTES.md`](docs/GNS3_BUILD_NOTES.md) | For scripted/automated builds: how to drive the routers over console, the NAT and service gotchas, adapter/port mapping, and correct behaviour that looks like a fault |
 | [`configs/*.cfg`](configs/) | Startup configurations for `HQ-CORE`, `HQ-DIST`, `DC-EDGE`, `BR-EDGE` |
 | [`configs/linux/`](configs/linux/) | Idempotent setup scripts for the Docker nodes: `auto-srv`, `dns`, `ntp`, `syslog` |
 | [`configs/vpcs/`](configs/vpcs/) | VPCS startup files for `PC1`–`PC4` |
