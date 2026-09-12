@@ -52,7 +52,7 @@ graph TB
     end
 
     subgraph DC["Data Centre - OSPF Area 20"]
-        SWDC1["SW-DC-1<br/>access VLAN 30"]
+        SWDC1["SW-DC-1<br/>trunk 30 uplink<br/>access VLAN 30"]
         DNS["DNS - Docker<br/>10.20.30.10<br/>dnsmasq"]
         NTP["NTP - Docker<br/>10.20.30.11<br/>chrony"]
         SYSLOG["SYSLOG - Docker<br/>10.20.30.12<br/>rsyslog"]
