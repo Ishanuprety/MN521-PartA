@@ -72,13 +72,211 @@ re-applied, which is what makes Part B possible.
 
 Four zones, five routers, a cost-engineered redundant WAN.
 
-**Figure 1 — Zone and trust overview.** *(placeholder: `figures/fig1-zones.png`; source diagram in [`docs/TOPOLOGY.md`](../docs/TOPOLOGY.md) §2.1)*
+Figures 1–3 are rendered below from Mermaid source, so this report is self-contained.
+For the `.docx` build they must be exported to PNG and inserted as images, because
+pandoc does not render Mermaid — see [`BUILD_DOCX.md`](BUILD_DOCX.md) §5. Identical
+source is maintained in [`docs/TOPOLOGY.md`](../docs/TOPOLOGY.md) §2.
 
-**Figure 2 — Full physical topology, 44 nodes.** *(placeholder: `figures/fig2-physical.png`; source diagram in [`docs/TOPOLOGY.md`](../docs/TOPOLOGY.md) §2.2)*
+### Figure 1 — Zone and trust overview
 
-**Figure 3 — Logical OSPF areas.** *(placeholder: `figures/fig3-ospf.png`; source diagram in [`docs/TOPOLOGY.md`](../docs/TOPOLOGY.md) §2.3)*
+*Export to `figures/fig1-zones.png` for the `.docx`.*
 
-**Figure 4 — GNS3 project canvas.** *(placeholder: `figures/SS-02-topology.png`)*
+```mermaid
+graph LR
+    NET["Internet-NAT<br/>NAT cloud<br/><b>UNTRUSTED</b>"]
+    ISP["ISP-Cloud<br/>hub - ISP handoff"]
+
+    subgraph EDGE["Internet edge"]
+        FW["FW-EDGE<br/>Lo0 4.4.4.4<br/>PAT + static NAT<br/>OSPF ASBR"]
+        DMZ["DMZ VLAN 60<br/>10.60.60.0/24<br/>WEB-SRV APP-SRV PC-DMZ<br/><b>SEMI-TRUSTED</b>"]
+    end
+
+    subgraph BB["Backbone - OSPF area 0"]
+        HC["HQ-CORE<br/>Lo0 1.1.1.1<br/>pure transit"]
+        WC["WAN-Cloud<br/>hub - backup WAN"]
+    end
+
+    subgraph HQZ["Headquarters - area 10"]
+        HD["HQ-DIST<br/>Lo0 1.1.1.4 - ABR<br/>ROAS + DHCP"]
+        HQV["VLAN 10 users PC1 PC5<br/>VLAN 20 corp PC2 PC8<br/>VLAN 99 mgmt AUTO-SRV JUMP-SRV"]
+    end
+
+    subgraph DCZ["Data Centre - area 20"]
+        DE["DC-EDGE<br/>Lo0 2.2.2.2 - ABR<br/>ROAS + DHCP + WAN transit"]
+        DCV["VLAN 30<br/>DNS NTP SYSLOG<br/>FILE-SRV MON-SRV"]
+    end
+
+    subgraph BRZ["Branch Office - area 30"]
+        BE["BR-EDGE<br/>Lo0 3.3.3.3 - ABR<br/>ROAS + DHCP"]
+        BRS["VLAN 40 staff<br/>PC3 PC6 PC7"]
+        BRG["VLAN 50 guest<br/>PC4 PC9<br/><b>UNTRUSTED</b>"]
+    end
+
+    NET --- ISP
+    ISP ---|"Fa0/0 dhcp<br/>NAT outside"| FW
+    FW --- DMZ
+    FW ---|"10.255.0.16/30"| HC
+    HC ---|"10.255.0.8/30"| HD
+    HC ---|"10.255.0.0/30"| DE
+    HC -.->|"cost 50"| WC
+    WC -.->|"10.255.0.20/30<br/>BACKUP"| BE
+    DE ---|"10.255.0.4/30<br/>PRIMARY"| BE
+    HD --- HQV
+    DE --- DCV
+    BE --- BRS
+    BE --- BRG
+```
+
+### Figure 2 — Full physical topology, 44 nodes
+
+*Export to `figures/fig2-physical.png` at `-w 3200`; consider a landscape page.*
+
+```mermaid
+graph TB
+    INET["Internet-NAT"]
+    ISPC["ISP-Cloud<br/>hub"]
+
+    subgraph Z1["Internet edge and DMZ"]
+        FW["FW-EDGE c7200<br/>Lo0 4.4.4.4"]
+        SWDMZ["SW-DMZ-1<br/>access VLAN 60"]
+        WEB["WEB-SRV<br/>10.60.60.10 - nginx 80"]
+        APP["APP-SRV<br/>10.60.60.11 - app 8080"]
+        PCDMZ["PC-DMZ<br/>VLAN 60 DHCP"]
+    end
+
+    subgraph Z2["Backbone area 0"]
+        HC["HQ-CORE c7200<br/>Lo0 1.1.1.1"]
+        WANC["WAN-Cloud<br/>hub"]
+    end
+
+    subgraph Z3["Headquarters area 10"]
+        HD["HQ-DIST c7200<br/>Lo0 1.1.1.4"]
+        SWHD["SW-HQ-DIST<br/>aggregation"]
+        SWH1["SW-HQ-1"]
+        SWH2["SW-HQ-2"]
+        SWH3["SW-HQ-3"]
+        SWH4["SW-HQ-4"]
+        MSW["MGMT-SW<br/>VLAN 99 island"]
+        PC1["PC1 v10"]
+        PC5["PC5 v10"]
+        PC2["PC2 v20"]
+        PC8["PC8 v20"]
+        AUTO["AUTO-SRV<br/>10.10.99.10<br/>Ansible"]
+        JUMP["JUMP-SRV<br/>10.10.99.11<br/>bastion"]
+    end
+
+    subgraph Z4["Data Centre area 20"]
+        DE["DC-EDGE c7200<br/>Lo0 2.2.2.2"]
+        SWDCC["SW-DC-CORE<br/>aggregation"]
+        SWD1["SW-DC-1"]
+        SWD2["SW-DC-2<br/>staging"]
+        SWD3["SW-DC-3"]
+        SWD4["SW-DC-4"]
+        DNS["DNS 10.20.30.10"]
+        NTP["NTP 10.20.30.11"]
+        SYS["SYSLOG 10.20.30.12"]
+        FILE["FILE-SRV 10.20.30.13"]
+        MON["MON-SRV 10.20.30.14"]
+    end
+
+    subgraph Z5["Branch Office area 30"]
+        BE["BR-EDGE c7200<br/>Lo0 3.3.3.3"]
+        SWBD["SW-BR-DIST<br/>aggregation"]
+        SWB1["SW-BR-1<br/>staff"]
+        SWB2["SW-BR-2<br/>guest"]
+        SWB3["SW-BR-3<br/>staff"]
+        SWB4["SW-BR-4<br/>guest"]
+        PC3["PC3 v40"]
+        PC7["PC7 v40"]
+        PC6["PC6 v40"]
+        PC4["PC4 v50 guest"]
+        PC9["PC9 v50 guest"]
+    end
+
+    INET ---|"L1"| ISPC
+    ISPC ---|"L2"| FW
+    FW ---|"L3 10.255.0.16/30"| HC
+    HC ---|"L4 10.255.0.0/30"| DE
+    HC ---|"L5 10.255.0.8/30"| HD
+    HC -.->|"L6 cost 50"| WANC
+    WANC -.->|"L7"| BE
+    DE ---|"L8 10.255.0.4/30"| BE
+
+    FW ---|"L9 trunk v60"| SWDMZ
+    SWDMZ ---|"L26"| WEB
+    SWDMZ ---|"L27"| APP
+    SWDMZ ---|"L28"| PCDMZ
+
+    HD ---|"L10 trunk v10,20,99"| SWHD
+    SWHD ---|"L11"| SWH1
+    SWHD ---|"L12"| SWH2
+    SWHD ---|"L13"| SWH3
+    SWHD ---|"L14"| SWH4
+    SWH1 ---|"L29 v10"| PC1
+    SWH1 ---|"L30 v99"| AUTO
+    SWH1 ---|"L25 v99 access"| MSW
+    MSW ---|"L34 v99"| JUMP
+    SWH2 ---|"L31 v20"| PC2
+    SWH3 ---|"L32 v10"| PC5
+    SWH4 ---|"L33 v20"| PC8
+
+    DE ---|"L15 trunk v30"| SWDCC
+    SWDCC ---|"L16"| SWD1
+    SWDCC ---|"L17"| SWD2
+    SWDCC ---|"L18"| SWD3
+    SWDCC ---|"L19"| SWD4
+    SWD1 ---|"L35"| DNS
+    SWD1 ---|"L36"| NTP
+    SWD1 ---|"L37"| SYS
+    SWD3 ---|"L38"| FILE
+    SWD4 ---|"L39"| MON
+
+    BE ---|"L20 trunk v40,50"| SWBD
+    SWBD ---|"L21"| SWB1
+    SWBD ---|"L22"| SWB2
+    SWBD ---|"L23"| SWB3
+    SWBD ---|"L24"| SWB4
+    SWB1 ---|"L40 v40"| PC3
+    SWB1 ---|"L41 v40"| PC7
+    SWB3 ---|"L43 v40"| PC6
+    SWB2 ---|"L42 v50"| PC4
+    SWB4 ---|"L44 v50"| PC9
+```
+
+### Figure 3 — Logical OSPF areas
+
+*Export to `figures/fig3-ospf.png`.*
+
+```mermaid
+graph TB
+    subgraph A0["Area 0 - backbone"]
+        FW2["FW-EDGE 4.4.4.4<br/>ASBR - default origin<br/>DMZ 10.60.60.0/24 also in area 0"]
+        HC2["HQ-CORE 1.1.1.1"]
+        DE2["DC-EDGE 2.2.2.2"]
+        HD2["HQ-DIST 1.1.1.4<br/>area 0 side"]
+        BE2["BR-EDGE 3.3.3.3<br/>area 0 side"]
+    end
+    subgraph A10["Area 10 - HQ"]
+        H10["10.10.10.0/24 users<br/>10.10.20.0/24 corp<br/>10.10.99.0/24 mgmt"]
+    end
+    subgraph A20["Area 20 - Data Centre"]
+        D20["10.20.30.0/24 servers"]
+    end
+    subgraph A30["Area 30 - Branch"]
+        B30["10.30.40.0/24 staff<br/>10.30.50.0/24 guest"]
+    end
+
+    FW2 ---|"MD5"| HC2
+    HC2 ---|"MD5"| DE2
+    HC2 ---|"MD5"| HD2
+    HC2 -.->|"MD5 - cost 50"| BE2
+    DE2 ---|"MD5"| BE2
+    HD2 ---|"ABR"| H10
+    DE2 ---|"ABR"| D20
+    BE2 ---|"ABR"| B30
+```
+
+**Figure 4 — GNS3 project canvas.** *Screenshot placeholder: `figures/SS-02-topology.png`.*
 
 | Zone | Trust | Gateway | OSPF area | Key contents |
 |------|-------|---------|-----------|--------------|
