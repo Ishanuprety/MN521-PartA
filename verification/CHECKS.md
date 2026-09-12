@@ -444,6 +444,13 @@ Expected: a bound lease from the GNS3 NAT cloud (`192.168.122.0/24` by default) 
 route present. If `Fa0/0` has no address, the NAT cloud is not attached or the GNS3 VM has no upstream —
 nothing in §6 will pass until this is fixed.
 
+> If your GNS3 installation's NAT cloud uses a network inside `10.0.0.0/8` rather than the default
+> `192.168.122.0/24`, the first entry of `ACL_INTERNET_IN`
+> (`deny ip 10.0.0.0 0.255.255.255 any log`) will drop the DHCP offer and all return traffic, because the
+> anti-spoofing rule assumes internal addresses never legitimately arrive from outside. In that case narrow
+> the rule to the three site blocks (`deny ip 10.10.0.0 0.0.255.255 any log` and equivalents for
+> `10.20.0.0/16`, `10.30.0.0/16`) instead of removing it.
+
 ### 6.2 Translation table **[EVIDENCE]**
 
 On `HQ-CORE`:
