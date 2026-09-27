@@ -1,0 +1,15 @@
+---
+device_role: Core router (area 0 backbone)
+loopback0: 1.1.1.1
+ospf:
+  router_id: 1.1.1.1
+  passive_interfaces: []
+  networks:
+    - { net: 1.1.1.1,     wildcard: 0.0.0.0, area: 0 }
+    - { net: 10.255.0.0,  wildcard: 0.0.0.3, area: 0 }
+    - { net: 10.255.0.8,  wildcard: 0.0.0.3, area: 0 }
+    - { net: 10.255.0.16, wildcard: 0.0.0.3, area: 0 }
+    - { net: 10.255.0.20, wildcard: 0.0.0.3, area: 0 }
+  default_originate: false
+ospf_expected_neighbors: [1.1.1.4, 2.2.2.2, 4.4.4.4]
+vlans: []

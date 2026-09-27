@@ -1,0 +1,4 @@
+---
+site_name: BRANCH
+site_description: Branch office (staff and guest VLANs)
+site_ping_targets: [10.20.30.11, 10.20.30.12, 1.1.1.1, 10.10.99.1]

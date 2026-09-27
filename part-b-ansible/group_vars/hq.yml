@@ -1,0 +1,4 @@
+---
+site_name: HQ
+site_description: Headquarters (core + distribution)
+site_ping_targets: [10.20.30.11, 10.20.30.12, 2.2.2.2, 4.4.4.4]

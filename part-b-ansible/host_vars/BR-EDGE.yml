@@ -1,0 +1,20 @@
+---
+device_role: Branch gateway (staff VLAN 40, guest VLAN 50), ABR area 0-30
+loopback0: 3.3.3.3
+vlans:
+  - { id: 40, name: BR_STAFF, interface: FastEthernet1/0.40, ip: 10.30.40.1, mask: 255.255.255.0 }
+  - { id: 50, name: BR_GUEST, interface: FastEthernet1/0.50, ip: 10.30.50.1, mask: 255.255.255.0 }
+vlan_trunk_extensions:
+  - { id: 40, interface: FastEthernet3/0.40 }
+ospf:
+  router_id: 3.3.3.3
+  passive_interfaces: [FastEthernet1/0.40, FastEthernet1/0.50]
+  networks:
+    - { net: 3.3.3.3,     wildcard: 0.0.0.0,   area: 30 }
+    - { net: 10.30.40.0,  wildcard: 0.0.0.255, area: 30 }
+    - { net: 10.30.50.0,  wildcard: 0.0.0.255, area: 30 }
+    - { net: 10.255.0.4,  wildcard: 0.0.0.3,   area: 0 }
+    - { net: 10.255.0.20, wildcard: 0.0.0.3,   area: 0 }
+  default_originate: false
+ospf_expected_neighbors: [2.2.2.2]
+acl_expected_applied: [ACL_GUEST]
