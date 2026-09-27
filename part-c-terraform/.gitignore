@@ -1,0 +1,27 @@
+# Terraform working directory and state (state can contain sensitive data)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.tfstate.lock.info
+
+# Variable files with environment-specific values
+*.tfvars
+*.tfvars.json
+!terraform.tfvars.example
+
+# SSH keys and credentials: never commit
+*.pem
+*.key
+id_*
+*_ed25519
+*_rsa
+.aws/
+.env

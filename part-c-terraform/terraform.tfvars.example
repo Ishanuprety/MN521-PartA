@@ -1,0 +1,16 @@
+# Copy to terraform.tfvars and edit. terraform.tfvars is git-ignored.
+aws_region   = "us-east-1"
+project_name = "mn521"
+group_number = "3"
+
+vpc_cidr             = "10.100.0.0/16"
+public_subnet_cidrs  = ["10.100.1.0/24", "10.100.2.0/24"]
+private_subnet_cidrs = ["10.100.11.0/24", "10.100.12.0/24"]
+
+# Your workstation's public IP as a /32:  curl -s https://checkip.amazonaws.com
+admin_cidr = "203.0.113.10/32"
+
+instance_type    = "t3.micro"
+key_name         = "mn521-partc-key"
+public_key_path  = "~/.ssh/mn521_partc_ed25519.pub"
+private_key_path = "~/.ssh/mn521_partc_ed25519"
