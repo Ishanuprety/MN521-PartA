@@ -1,0 +1,9 @@
+acl,type,device,applied_to,direction,purpose
+ACL_OUTSIDE_IN,extended,FW-EDGE,Fa0/0,in,Perimeter allow-list: RFC2827 anti-spoofing; two published services; structural return traffic; closing explicit deny
+ACL_DMZ_IN,extended,FW-EDGE,Fa2/0.60,in,DMZ egress containment - no DMZ-initiated session into any trusted zone
+ACL_NAT,standard,FW-EDGE,ip nat inside source list,n/a,PAT scope - four zones; WAN transit deliberately excluded
+ACL_WAN_BR_IN,extended,DC-EDGE,Fa1/0,in,Branch guest containment on the primary WAN path
+ACL_WAN_BR_IN,extended,HQ-CORE,Fa3/0,in,Branch guest containment on the backup WAN path - same policy whichever path OSPF selects
+ACL_GUEST_IN,extended,BR-EDGE,Fa3/0.50,in,First-hop guest containment - every enterprise zone denied by name
+ACL_HQ_USERS_IN,extended,HQ-DIST,Fa2/0.10,in,HQ user VLAN cannot reach the management VLAN
+ACL_VTY,extended,all 5 routers,line vty 0 4 and line vty 5 15,in,Administrative SSH from two named hosts plus the DC break-glass subnet; refusals logged
