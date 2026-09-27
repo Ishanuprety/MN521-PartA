@@ -1,0 +1,18 @@
+---
+# Connection settings for all Cisco IOS routers (c7200, IOS 15.0)
+ansible_connection: ansible.netcommon.network_cli
+ansible_network_os: cisco.ios.ios
+# Credentials come from the encrypted group_vars/all/vault.yml
+ansible_user: "{{ vault_ssh_user }}"
+ansible_password: "{{ vault_ssh_password }}"
+ansible_become: true
+ansible_become_method: enable
+ansible_become_password: "{{ vault_enable_password }}"
+# IOS 15.0 only offers legacy KEX/ciphers (dh-group1/14-sha1, aes-cbc, ssh-rsa);
+# paramiko negotiates these without extra ssh_args.
+ansible_network_cli_ssh_type: paramiko
+ansible_paramiko_host_key_auto_add: true
+ansible_paramiko_look_for_keys: false
+ansible_command_timeout: 90
+
+ospf_process_id: 1

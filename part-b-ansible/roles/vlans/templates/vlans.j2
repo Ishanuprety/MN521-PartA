@@ -1,0 +1,14 @@
+{# VLAN gateways: the lab switches are unmanaged GNS3 switches, so each VLAN
+   lives on the router as an 802.1Q subinterface (or a routed access port). #}
+{% for v in vlans %}
+interface {{ v.interface }}
+ description {{ v.description | default('VLAN' ~ v.id ~ '_' ~ v.name) }}
+{% if v.dot1q | default(true) %}
+ encapsulation dot1Q {{ v.id }}
+{% endif %}
+ ip address {{ v.ip }} {{ v.mask }}
+{% endfor %}
+{% for t in vlan_trunk_extensions %}
+interface {{ t.interface }}
+ encapsulation dot1Q {{ t.id }}
+{% endfor %}

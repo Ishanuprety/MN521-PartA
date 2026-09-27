@@ -1,0 +1,389 @@
+
+PLAY [Configuration backup] ****************************************************
+
+TASK [backup : Backup | make sure the backup folder exists] ********************
+changed: [HQ-CORE -> localhost]
+
+TASK [backup : Backup | save running-config to backups/<host>_<date>.cfg] ******
+ok: [HQ-DIST]
+ok: [HQ-CORE]
+ok: [FW-EDGE]
+ok: [DC-EDGE]
+ok: [BR-EDGE]
+
+TASK [backup : Backup | stat the backup file] **********************************
+ok: [FW-EDGE -> localhost]
+ok: [BR-EDGE -> localhost]
+ok: [DC-EDGE -> localhost]
+ok: [HQ-DIST -> localhost]
+ok: [HQ-CORE -> localhost]
+
+TASK [backup : Backup | assert the backup is non-empty and holds the hostname] ***
+ok: [BR-EDGE]
+ok: [FW-EDGE]
+ok: [DC-EDGE]
+ok: [HQ-DIST]
+ok: [HQ-CORE]
+
+TASK [backup : Backup | write backup index (reports/backup_index.csv)] *********
+ok: [HQ-CORE -> localhost]
+
+PLAY [Network verification and monitoring] *************************************
+
+TASK [monitoring : Monitoring | create report folders] *************************
+ok: [HQ-CORE -> localhost] => (item=interfaces)
+ok: [HQ-CORE -> localhost] => (item=routing)
+ok: [HQ-CORE -> localhost] => (item=vlans)
+ok: [HQ-CORE -> localhost] => (item=acl)
+ok: [HQ-CORE -> localhost] => (item=resources)
+ok: [HQ-CORE -> localhost] => (item=connectivity)
+ok: [HQ-CORE -> localhost] => (item=inventory)
+
+TASK [monitoring : Interfaces | collect interface state] ***********************
+ok: [HQ-DIST]
+ok: [HQ-CORE]
+ok: [FW-EDGE]
+ok: [DC-EDGE]
+ok: [BR-EDGE]
+
+TASK [monitoring : Interfaces | parse show ip interface brief] *****************
+ok: [HQ-CORE]
+ok: [DC-EDGE]
+ok: [HQ-DIST]
+ok: [BR-EDGE]
+ok: [FW-EDGE]
+
+TASK [monitoring : Interfaces | save raw output (reports/interfaces/<host>.txt)] ***
+ok: [BR-EDGE -> localhost]
+ok: [HQ-DIST -> localhost]
+ok: [HQ-CORE -> localhost]
+ok: [DC-EDGE -> localhost]
+ok: [FW-EDGE -> localhost]
+
+TASK [monitoring : Interfaces | write reports/interfaces_summary.csv] **********
+ok: [HQ-CORE -> localhost]
+
+TASK [monitoring : Interfaces | summary] ***************************************
+ok: [HQ-CORE] => {
+    "msg": "HQ-CORE: 4 up/up, 1 addressed-but-down (FastEthernet3/0), 5 interfaces total"
+}
+ok: [HQ-DIST] => {
+    "msg": "HQ-DIST: 10 up/up, 0 addressed-but-down (none), 10 interfaces total"
+}
+ok: [BR-EDGE] => {
+    "msg": "BR-EDGE: 7 up/up, 0 addressed-but-down (none), 8 interfaces total"
+}
+ok: [FW-EDGE] => {
+    "msg": "FW-EDGE: 6 up/up, 0 addressed-but-down (none), 7 interfaces total"
+}
+ok: [DC-EDGE] => {
+    "msg": "DC-EDGE: 4 up/up, 0 addressed-but-down (none), 5 interfaces total"
+}
+
+TASK [monitoring : Routing | collect OSPF and routing table] *******************
+ok: [HQ-DIST]
+ok: [HQ-CORE]
+ok: [FW-EDGE]
+ok: [DC-EDGE]
+ok: [BR-EDGE]
+
+TASK [monitoring : Routing | parse neighbours and routes] **********************
+ok: [HQ-CORE]
+ok: [BR-EDGE]
+ok: [HQ-DIST]
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+
+TASK [monitoring : Routing | save raw output (reports/routing/<host>.txt)] *****
+changed: [BR-EDGE -> localhost]
+changed: [HQ-DIST -> localhost]
+changed: [HQ-CORE -> localhost]
+changed: [DC-EDGE -> localhost]
+changed: [FW-EDGE -> localhost]
+
+TASK [monitoring : Routing | write reports/routing_summary.csv] ****************
+ok: [HQ-CORE -> localhost]
+
+TASK [monitoring : Routing | assert all expected OSPF neighbours are FULL] *****
+ok: [HQ-CORE] => {
+    "changed": false,
+    "msg": "HQ-CORE: 3 FULL neighbour(s) ['4.4.4.4', '1.1.1.4', '2.2.2.2'], 14 OSPF routes, last resort 10.255.0.17"
+}
+ok: [HQ-DIST] => {
+    "changed": false,
+    "msg": "HQ-DIST: 1 FULL neighbour(s) ['1.1.1.1'], 13 OSPF routes, last resort 10.255.0.9"
+}
+ok: [DC-EDGE] => {
+    "changed": false,
+    "msg": "DC-EDGE: 2 FULL neighbour(s) ['3.3.3.3', '1.1.1.1'], 14 OSPF routes, last resort 10.255.0.1"
+}
+ok: [BR-EDGE] => {
+    "changed": false,
+    "msg": "BR-EDGE: 1 FULL neighbour(s) ['2.2.2.2'], 13 OSPF routes, last resort 10.255.0.5"
+}
+ok: [FW-EDGE] => {
+    "changed": false,
+    "msg": "FW-EDGE: 1 FULL neighbour(s) ['1.1.1.1'], 14 OSPF routes, last resort 192.168.122.1"
+}
+
+TASK [monitoring : VLANs | collect 802.1Q VLAN state from the router] **********
+ok: [HQ-CORE]
+ok: [DC-EDGE]
+ok: [HQ-DIST]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+
+TASK [monitoring : VLANs | compare intended VLANs (host_vars) with the device] ***
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [DC-EDGE]
+ok: [BR-EDGE]
+ok: [FW-EDGE]
+
+TASK [monitoring : VLANs | save raw output (reports/vlans/<host>.txt)] *********
+changed: [BR-EDGE -> localhost]
+ok: [DC-EDGE -> localhost]
+changed: [HQ-DIST -> localhost]
+changed: [FW-EDGE -> localhost]
+ok: [HQ-CORE -> localhost]
+
+TASK [monitoring : VLANs | write reports/vlans_summary.csv] ********************
+ok: [HQ-CORE -> localhost]
+
+TASK [monitoring : VLANs | assert every intended VLAN gateway is present and up] ***
+ok: [FW-EDGE] => {
+    "changed": false,
+    "msg": "FW-EDGE: 1 VLAN gateway(s) OK [60]"
+}
+ok: [BR-EDGE] => {
+    "changed": false,
+    "msg": "BR-EDGE: 2 VLAN gateway(s) OK [40, 50]"
+}
+ok: [HQ-DIST] => {
+    "changed": false,
+    "msg": "HQ-DIST: 3 VLAN gateway(s) OK [10, 20, 99]"
+}
+ok: [DC-EDGE] => {
+    "changed": false,
+    "msg": "DC-EDGE: 1 VLAN gateway(s) OK [30]"
+}
+ok: [HQ-CORE] => {
+    "changed": false,
+    "msg": "HQ-CORE: 0 VLAN gateway(s) OK []"
+}
+
+TASK [monitoring : ACL | collect ACLs and where they are applied] **************
+ok: [HQ-DIST]
+ok: [HQ-CORE]
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+
+TASK [monitoring : ACL | parse ACL names, entries and hit counts] **************
+ok: [BR-EDGE]
+ok: [FW-EDGE]
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [DC-EDGE]
+
+TASK [monitoring : ACL | save raw output (reports/acl/<host>.txt)] *************
+changed: [HQ-CORE -> localhost]
+changed: [HQ-DIST -> localhost]
+changed: [BR-EDGE -> localhost]
+changed: [FW-EDGE -> localhost]
+changed: [DC-EDGE -> localhost]
+
+TASK [monitoring : ACL | write reports/acl_summary.csv] ************************
+changed: [HQ-CORE -> localhost]
+
+TASK [monitoring : ACL | assert VTY ACL and expected interface ACLs are in place] ***
+ok: [BR-EDGE] => {
+    "changed": false,
+    "msg": "BR-EDGE: ACLs ['ACL_MGMT', 'ACL_GUEST', 'ACL_VTY']; ACL_VTY on VTY; interface ACLs ['ACL_GUEST in']"
+}
+ok: [HQ-CORE] => {
+    "changed": false,
+    "msg": "HQ-CORE: ACLs ['ACL_MGMT', 'ACL_VTY']; ACL_VTY on VTY; interface ACLs none"
+}
+ok: [HQ-DIST] => {
+    "changed": false,
+    "msg": "HQ-DIST: ACLs ['ACL_MGMT', 'ACL_VTY']; ACL_VTY on VTY; interface ACLs none"
+}
+ok: [FW-EDGE] => {
+    "changed": false,
+    "msg": "FW-EDGE: ACLs ['10', 'ACL_MGMT', 'ACL_DMZ_IN', 'ACL_OUTSIDE_IN', 'ACL_VTY']; ACL_VTY on VTY; interface ACLs ['ACL_OUTSIDE_IN in', 'ACL_DMZ_IN in']"
+}
+ok: [DC-EDGE] => {
+    "changed": false,
+    "msg": "DC-EDGE: ACLs ['ACL_MGMT', 'ACL_DC_IN', 'ACL_VTY']; ACL_VTY on VTY; interface ACLs ['ACL_DC_IN in']"
+}
+
+TASK [monitoring : Resources | collect CPU and memory utilisation] *************
+ok: [HQ-DIST]
+ok: [FW-EDGE]
+ok: [DC-EDGE]
+ok: [HQ-CORE]
+ok: [BR-EDGE]
+
+TASK [monitoring : Resources | parse CPU and memory figures] *******************
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [DC-EDGE]
+ok: [BR-EDGE]
+ok: [FW-EDGE]
+
+TASK [monitoring : Resources | derive memory percentage] ***********************
+ok: [BR-EDGE]
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [FW-EDGE]
+ok: [DC-EDGE]
+
+TASK [monitoring : Resources | save raw output (reports/resources/<host>.txt)] ***
+changed: [BR-EDGE -> localhost]
+changed: [HQ-DIST -> localhost]
+changed: [HQ-CORE -> localhost]
+changed: [FW-EDGE -> localhost]
+changed: [DC-EDGE -> localhost]
+
+TASK [monitoring : Resources | write reports/resources_summary.csv] ************
+changed: [HQ-CORE -> localhost]
+
+TASK [monitoring : Resources | assert CPU and memory are under threshold] ******
+ok: [HQ-CORE] => {
+    "changed": false,
+    "msg": "HQ-CORE: CPU 5s/1m/5m 8/4/4%, memory 26.7% used of 119 MB"
+}
+ok: [HQ-DIST] => {
+    "changed": false,
+    "msg": "HQ-DIST: CPU 5s/1m/5m 16/6/5%, memory 26.8% used of 119 MB"
+}
+ok: [DC-EDGE] => {
+    "changed": false,
+    "msg": "DC-EDGE: CPU 5s/1m/5m 5/3/3%, memory 26.8% used of 119 MB"
+}
+ok: [FW-EDGE] => {
+    "changed": false,
+    "msg": "FW-EDGE: CPU 5s/1m/5m 15/3/3%, memory 33.5% used of 119 MB"
+}
+ok: [BR-EDGE] => {
+    "changed": false,
+    "msg": "BR-EDGE: CPU 5s/1m/5m 10/4/3%, memory 26.8% used of 119 MB"
+}
+
+TASK [monitoring : Connectivity | ping from each router to its site targets] ***
+ok: [DC-EDGE]
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+
+TASK [monitoring : Connectivity | ping each router's management address from the control node] ***
+ok: [HQ-CORE -> localhost]
+ok: [HQ-DIST -> localhost]
+ok: [BR-EDGE -> localhost]
+ok: [DC-EDGE -> localhost]
+ok: [FW-EDGE -> localhost]
+
+TASK [monitoring : Connectivity | parse success rates] *************************
+ok: [HQ-CORE]
+ok: [DC-EDGE]
+ok: [HQ-DIST]
+ok: [BR-EDGE]
+ok: [FW-EDGE]
+
+TASK [monitoring : Connectivity | save raw output (reports/connectivity/<host>.txt)] ***
+changed: [FW-EDGE -> localhost]
+changed: [DC-EDGE -> localhost]
+changed: [BR-EDGE -> localhost]
+changed: [HQ-CORE -> localhost]
+changed: [HQ-DIST -> localhost]
+
+TASK [monitoring : Connectivity | write reports/connectivity_summary.csv] ******
+ok: [HQ-CORE -> localhost]
+
+TASK [monitoring : Connectivity | report results] ******************************
+ok: [HQ-CORE] => {
+    "msg": "HQ-CORE: control-node ping OK; 10.20.30.11=100% 10.20.30.12=100% 2.2.2.2=100% 4.4.4.4=100% "
+}
+ok: [HQ-DIST] => {
+    "msg": "HQ-DIST: control-node ping OK; 10.20.30.11=100% 10.20.30.12=100% 2.2.2.2=100% 4.4.4.4=100% "
+}
+ok: [BR-EDGE] => {
+    "msg": "BR-EDGE: control-node ping OK; 10.20.30.11=100% 10.20.30.12=100% 1.1.1.1=100% 10.10.99.1=100% "
+}
+ok: [FW-EDGE] => {
+    "msg": "FW-EDGE: control-node ping OK; 10.20.30.11=100% 10.20.30.12=100% 1.1.1.1=100% 8.8.8.8=100% "
+}
+ok: [DC-EDGE] => {
+    "msg": "DC-EDGE: control-node ping OK; 10.20.30.10=100% 10.20.30.11=100% 10.20.30.12=100% 1.1.1.1=100% "
+}
+
+TASK [monitoring : Connectivity | assert all targets answered] *****************
+ok: [BR-EDGE]
+ok: [FW-EDGE]
+ok: [DC-EDGE]
+ok: [HQ-DIST]
+ok: [HQ-CORE]
+
+TASK [monitoring : Inventory | gather device facts] ****************************
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+
+TASK [monitoring : Inventory | read uptime] ************************************
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+ok: [HQ-DIST]
+ok: [HQ-CORE]
+ok: [BR-EDGE]
+
+TASK [monitoring : Inventory | build inventory record] *************************
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [DC-EDGE]
+ok: [BR-EDGE]
+ok: [FW-EDGE]
+
+TASK [monitoring : Inventory | save device record (reports/inventory/<host>.yml)] ***
+changed: [HQ-DIST -> localhost]
+changed: [HQ-CORE -> localhost]
+changed: [FW-EDGE -> localhost]
+changed: [BR-EDGE -> localhost]
+changed: [DC-EDGE -> localhost]
+
+TASK [monitoring : Inventory | write reports/inventory_report.csv] *************
+changed: [HQ-CORE -> localhost]
+
+TASK [monitoring : Inventory | device summary] *********************************
+ok: [HQ-CORE] => {
+    "msg": "HQ-CORE | HQ | 7206VXR | IOS 15.0(1)M | up 1 hour, 4 minutes"
+}
+ok: [HQ-DIST] => {
+    "msg": "HQ-DIST | HQ | 7206VXR | IOS 15.0(1)M | up 1 hour, 3 minutes"
+}
+ok: [DC-EDGE] => {
+    "msg": "DC-EDGE | DC | 7206VXR | IOS 15.0(1)M | up 1 hour, 4 minutes"
+}
+ok: [BR-EDGE] => {
+    "msg": "BR-EDGE | BRANCH | 7206VXR | IOS 15.0(1)M | up 1 hour, 3 minutes"
+}
+ok: [FW-EDGE] => {
+    "msg": "FW-EDGE | EDGE | 7206VXR | IOS 15.0(1)M | up 1 hour, 4 minutes"
+}
+
+PLAY [Consolidated monitoring report] ******************************************
+
+TASK [Report | render reports/MONITORING_REPORT.md] ****************************
+changed: [localhost]
+
+PLAY RECAP *********************************************************************
+BR-EDGE                    : ok=35   changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+DC-EDGE                    : ok=35   changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+FW-EDGE                    : ok=35   changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+HQ-CORE                    : ok=45   changed=9    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+HQ-DIST                    : ok=35   changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

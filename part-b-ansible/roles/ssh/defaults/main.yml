@@ -1,0 +1,7 @@
+---
+ssh_version: 2
+ssh_timeout: 60
+ssh_auth_retries: 2
+vty_lines: "0 4"
+vty_exec_timeout: "15 0"
+vty_acl: ACL_VTY

@@ -1,0 +1,10 @@
+hostname: BR-EDGE
+image: tftp://255.255.255.255/unknown
+ios_version: 15.0(1)M
+mem_total_mb: '118.53946304321289'
+mgmt_ip: 3.3.3.3
+model: 7206VXR
+role: Branch gateway (staff VLAN 40, guest VLAN 50), ABR area 0-30
+serial: '4279256517'
+site: BRANCH
+uptime: 1 hour, 3 minutes

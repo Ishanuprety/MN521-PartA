@@ -1,0 +1,25 @@
+---
+device_role: HQ distribution / inter-VLAN gateway (ABR area 0-10)
+loopback0: 1.1.1.4
+vlans:
+  - { id: 10, name: HQ_USERS,     interface: FastEthernet1/0.10, ip: 10.10.10.1, mask: 255.255.255.0 }
+  - { id: 20, name: HQ_CORPORATE, interface: FastEthernet1/0.20, ip: 10.10.20.1, mask: 255.255.255.0 }
+  - { id: 99, name: HQ_MGMT,      interface: FastEthernet1/0.99, ip: 10.10.99.1, mask: 255.255.255.0 }
+# Layer-2 extension of the same VLAN tags towards SW-HQ-2 (no L3 address)
+vlan_trunk_extensions:
+  - { id: 10, interface: FastEthernet2/0.10 }
+  - { id: 20, interface: FastEthernet2/0.20 }
+  - { id: 99, interface: FastEthernet2/0.99 }
+ospf:
+  router_id: 1.1.1.4
+  passive_interfaces: [FastEthernet1/0.10, FastEthernet1/0.20, FastEthernet1/0.99]
+  networks:
+    - { net: 1.1.1.4,    wildcard: 0.0.0.0,   area: 10 }
+    - { net: 10.10.10.0, wildcard: 0.0.0.255, area: 10 }
+    - { net: 10.10.20.0, wildcard: 0.0.0.255, area: 10 }
+    - { net: 10.10.99.0, wildcard: 0.0.0.255, area: 10 }
+    - { net: 10.255.0.8, wildcard: 0.0.0.3,   area: 0 }
+  default_originate: false
+ospf_expected_neighbors: [1.1.1.1]
+# HQ-DIST keeps DNS lookups on (resolves corp.local names via 10.20.30.10)
+ip_domain_lookup: true

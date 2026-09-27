@@ -1,0 +1,117 @@
+
+PLAY [MN521 enterprise configuration (Infrastructure as Code)] *****************
+
+TASK [base : Base | hostname and global services from template] ****************
+ok: [HQ-DIST]
+ok: [HQ-CORE]
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+
+TASK [base : Base | read current MOTD banner from running-config] **************
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [BR-EDGE]
+
+TASK [base : Base | compare running banner with the intended banner] ***********
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [DC-EDGE]
+ok: [BR-EDGE]
+ok: [FW-EDGE]
+
+TASK [ssh : SSH | SSHv2, timers and VTY access (SSH only, ACL-protected)] ******
+ok: [HQ-CORE]
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+ok: [HQ-DIST]
+ok: [BR-EDGE]
+
+TASK [ssh : SSH | read SSH server state] ***************************************
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+
+TASK [ssh : SSH | assert SSH version 2 is enabled] *****************************
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [BR-EDGE]
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+
+TASK [ntp_syslog : NTP | point clock at the DC NTP server(s)] ******************
+ok: [HQ-CORE]
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+ok: [HQ-DIST]
+ok: [BR-EDGE]
+
+TASK [ntp_syslog : Syslog | send logs to the DC syslog server(s)] **************
+ok: [HQ-CORE]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+ok: [DC-EDGE]
+ok: [HQ-DIST]
+
+TASK [vlans : VLANs | configure VLAN gateway subinterfaces] ********************
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+ok: [HQ-DIST]
+ok: [BR-EDGE]
+
+TASK [ospf : OSPF | multi-area OSPF process from template] *********************
+ok: [HQ-CORE]
+ok: [DC-EDGE]
+ok: [HQ-DIST]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+
+TASK [ospf : OSPF | read neighbour table] **************************************
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [FW-EDGE]
+ok: [DC-EDGE]
+ok: [BR-EDGE]
+
+TASK [ospf : OSPF | assert every expected neighbour is FULL] *******************
+ok: [HQ-CORE] => (item=1.1.1.4)
+ok: [HQ-CORE] => (item=2.2.2.2)
+ok: [HQ-DIST] => (item=1.1.1.1)
+ok: [HQ-CORE] => (item=4.4.4.4)
+ok: [DC-EDGE] => (item=1.1.1.1)
+ok: [BR-EDGE] => (item=2.2.2.2)
+ok: [FW-EDGE] => (item=1.1.1.1)
+ok: [DC-EDGE] => (item=3.3.3.3)
+
+TASK [acl : ACL | management ACLs from template (ACL_VTY + ACL_MGMT)] **********
+ok: [HQ-CORE]
+ok: [DC-EDGE]
+ok: [HQ-DIST]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+
+TASK [acl : ACL | read VTY line configuration] *********************************
+ok: [DC-EDGE]
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [FW-EDGE]
+ok: [BR-EDGE]
+
+TASK [acl : ACL | assert ACL_VTY is applied inbound on the VTY lines] **********
+ok: [HQ-CORE]
+ok: [HQ-DIST]
+ok: [BR-EDGE]
+ok: [DC-EDGE]
+ok: [FW-EDGE]
+
+PLAY RECAP *********************************************************************
+BR-EDGE                    : ok=15   changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+DC-EDGE                    : ok=15   changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+FW-EDGE                    : ok=15   changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+HQ-CORE                    : ok=14   changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+HQ-DIST                    : ok=15   changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+

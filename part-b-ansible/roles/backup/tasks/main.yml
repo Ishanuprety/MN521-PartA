@@ -1,0 +1,43 @@
+---
+- name: Backup | make sure the backup folder exists
+  ansible.builtin.file:
+    path: "{{ backup_dir }}"
+    state: directory
+    mode: "0750"
+  delegate_to: localhost
+  run_once: true
+
+- name: Backup | save running-config to backups/<host>_<date>.cfg
+  cisco.ios.ios_config:
+    backup: true
+    backup_options:
+      dir_path: "{{ backup_dir }}"
+      filename: "{{ inventory_hostname }}_{{ run_date }}.cfg"
+  register: backup_result
+
+- name: Backup | stat the backup file
+  ansible.builtin.stat:
+    path: "{{ backup_dir }}/{{ inventory_hostname }}_{{ run_date }}.cfg"
+    checksum_algorithm: sha256
+  delegate_to: localhost
+  register: backup_stat
+
+- name: Backup | assert the backup is non-empty and holds the hostname
+  ansible.builtin.assert:
+    that:
+      - backup_stat.stat.exists
+      - backup_stat.stat.size > 1000
+      - lookup('ansible.builtin.file', backup_stat.stat.path) is search('hostname ' ~ inventory_hostname)
+    quiet: true
+
+- name: Backup | write backup index (reports/backup_index.csv)
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/backup_index.csv"
+    mode: "0644"
+    content: |
+      host,file,bytes,sha256
+      {% for h in ansible_play_hosts %}
+      {{ h }},backups/{{ h }}_{{ run_date }}.cfg,{{ hostvars[h].backup_stat.stat.size }},{{ hostvars[h].backup_stat.stat.checksum }}
+      {% endfor %}
+  delegate_to: localhost
+  run_once: true

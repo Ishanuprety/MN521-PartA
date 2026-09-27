@@ -1,0 +1,3 @@
+### HQ-CORE (2026-09-27)
+CPU utilization for five seconds: 8%/100%; one minute: 4%; five minutes: 4%
+Processor Pool Total:  124297636 Used:   33209668 Free:   91087968

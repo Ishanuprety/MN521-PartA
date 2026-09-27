@@ -1,0 +1,5 @@
+# pip install -r requirements.txt   (control node, Python 3.10)
+ansible-core==2.17.*
+# paramiko 4+/5 dropped the SHA-1 key exchanges that IOS 15.0 requires
+# (diffie-hellman-group14-sha1 / group1-sha1), so pin the 3.x line.
+paramiko==3.5.1

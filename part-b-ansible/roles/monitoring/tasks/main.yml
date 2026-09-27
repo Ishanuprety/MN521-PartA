@@ -1,0 +1,38 @@
+---
+- name: Monitoring | create report folders
+  ansible.builtin.file:
+    path: "{{ report_dir }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ report_subdirs }}"
+  delegate_to: localhost
+  run_once: true
+  tags: [always]
+
+- name: Monitoring | interface verification
+  ansible.builtin.import_tasks: interfaces.yml
+  tags: [interfaces]
+
+- name: Monitoring | routing (OSPF) verification
+  ansible.builtin.import_tasks: routing.yml
+  tags: [routing]
+
+- name: Monitoring | VLAN verification
+  ansible.builtin.import_tasks: vlans.yml
+  tags: [vlans]
+
+- name: Monitoring | ACL verification
+  ansible.builtin.import_tasks: acl.yml
+  tags: [acl]
+
+- name: Monitoring | CPU and memory utilisation
+  ansible.builtin.import_tasks: resources.yml
+  tags: [resources, cpu, memory]
+
+- name: Monitoring | connectivity testing
+  ansible.builtin.import_tasks: connectivity.yml
+  tags: [connectivity]
+
+- name: Monitoring | inventory reporting
+  ansible.builtin.import_tasks: inventory.yml
+  tags: [inventory]

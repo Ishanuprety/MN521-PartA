@@ -1,0 +1,4 @@
+---
+site_name: EDGE
+site_description: Internet edge / DMZ (NAT, ACL_OUTSIDE_IN)
+site_ping_targets: [10.20.30.11, 10.20.30.12, 1.1.1.1, 8.8.8.8]

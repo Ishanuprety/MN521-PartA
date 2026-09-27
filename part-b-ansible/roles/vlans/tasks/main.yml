@@ -1,0 +1,6 @@
+---
+- name: VLANs | configure VLAN gateway subinterfaces
+  cisco.ios.ios_config:
+    src: vlans.j2
+  when: vlans | length > 0
+  notify: save config

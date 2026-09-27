@@ -1,0 +1,25 @@
+### HQ-DIST - show ip interface brief (2026-09-27)
+Interface                  IP-Address      OK? Method Status                Protocol
+FastEthernet0/0            10.255.0.10     YES NVRAM  up                    up      
+FastEthernet1/0            unassigned      YES NVRAM  up                    up      
+FastEthernet1/0.10         10.10.10.1      YES NVRAM  up                    up      
+FastEthernet1/0.20         10.10.20.1      YES NVRAM  up                    up      
+FastEthernet1/0.99         10.10.99.1      YES NVRAM  up                    up      
+FastEthernet2/0            unassigned      YES NVRAM  up                    up      
+FastEthernet2/0.10         unassigned      YES unset  up                    up      
+FastEthernet2/0.20         unassigned      YES unset  up                    up      
+FastEthernet2/0.99         unassigned      YES unset  up                    up      
+Loopback0                  1.1.1.4         YES NVRAM  up                    up
+
+### HQ-DIST - show interfaces description
+Interface                      Status         Protocol Description
+Fa0/0                          up             up       UPLINK_TO_HQ-CORE
+Fa1/0                          up             up       TRUNK_TO_SW-HQ-1
+Fa1/0.10                       up             up       VLAN10_HQ_USERS
+Fa1/0.20                       up             up       VLAN20_HQ_CORPORATE
+Fa1/0.99                       up             up       VLAN99_HQ_MGMT
+Fa2/0                          up             up       TRUNK_TO_SW-HQ-2
+Fa2/0.10                       up             up       
+Fa2/0.20                       up             up       
+Fa2/0.99                       up             up       
+Lo0                            up             up

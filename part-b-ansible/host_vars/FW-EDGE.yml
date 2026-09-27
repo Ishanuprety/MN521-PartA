@@ -1,0 +1,19 @@
+---
+device_role: Internet edge / DMZ gateway, NAT, OSPF ASBR
+loopback0: 4.4.4.4
+banner_motd: |-
+  MN521 FW-EDGE b
+  DMZ/Internet edge
+vlans:
+  - { id: 60, name: DMZ, interface: FastEthernet2/0.60, ip: 10.60.60.1, mask: 255.255.255.0 }
+ospf:
+  router_id: 4.4.4.4
+  passive_interfaces: [FastEthernet2/0.60]
+  networks:
+    - { net: 4.4.4.4,     wildcard: 0.0.0.0,   area: 0 }
+    - { net: 10.60.60.0,  wildcard: 0.0.0.255, area: 0 }
+    - { net: 10.255.0.16, wildcard: 0.0.0.3,   area: 0 }
+  default_originate: true
+ospf_expected_neighbors: [1.1.1.1]
+# Part A data-plane ACLs that must stay attached (verified, not managed)
+acl_expected_applied: [ACL_OUTSIDE_IN, ACL_DMZ_IN]

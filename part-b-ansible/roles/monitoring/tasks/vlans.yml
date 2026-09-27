@@ -1,0 +1,53 @@
+---
+- name: VLANs | collect 802.1Q VLAN state from the router
+  cisco.ios.ios_command:
+    commands:
+      - show vlans
+      - show ip interface brief
+  register: vlan_out
+  changed_when: false
+
+- name: VLANs | compare intended VLANs (host_vars) with the device
+  ansible.builtin.set_fact:
+    mon_vlan: >-
+      {%- set rows = [] -%}
+      {%- for v in vlans | default([]) -%}
+      {%- set tagged = vlan_out.stdout[0] is search('Virtual LAN ID:\s+' ~ v.id ~ '\s') -%}
+      {%- set line = vlan_out.stdout[1] | regex_findall('(?m)^' ~ (v.interface | regex_escape) ~ '\s+(\S+)\s+\S+\s+\S+\s+(up|down|administratively down)\s+(up|down)') | first | default('') -%}
+      {%- set ok = (line is not none) and line[0] == v.ip and line[1] == 'up' and line[2] == 'up' and (tagged or not (v.dot1q | default(true))) -%}
+      {%- set _ = rows.append({'id': v.id, 'name': v.name, 'interface': v.interface, 'gateway': v.ip,
+            'dot1q': (v.dot1q | default(true)), 'seen_in_show_vlans': tagged,
+            'state': (line[1] ~ '/' ~ line[2]) if line else 'missing', 'result': 'OK' if ok else 'FAIL'}) -%}
+      {%- endfor -%}
+      {{ rows }}
+
+- name: VLANs | save raw output (reports/vlans/<host>.txt)
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/vlans/{{ inventory_hostname }}.txt"
+    mode: "0644"
+    content: |
+      ### {{ inventory_hostname }} - show vlans ({{ run_date }})
+      {{ vlan_out.stdout[0] if vlan_out.stdout[0] | length > 0 else '(no 802.1Q subinterfaces on this router)' }}
+  delegate_to: localhost
+
+- name: VLANs | write reports/vlans_summary.csv
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/vlans_summary.csv"
+    mode: "0644"
+    content: |
+      host,vlan,name,interface,gateway,dot1q,seen_in_show_vlans,state,result
+      {% for h in ansible_play_hosts %}
+      {% for r in hostvars[h].mon_vlan %}
+      {{ h }},{{ r.id }},{{ r.name }},{{ r.interface }},{{ r.gateway }},{{ r.dot1q }},{{ r.seen_in_show_vlans }},{{ r.state }},{{ r.result }}
+      {% endfor %}
+      {% endfor %}
+  delegate_to: localhost
+  run_once: true
+
+- name: VLANs | assert every intended VLAN gateway is present and up
+  ansible.builtin.assert:
+    that: mon_vlan | selectattr('result', 'eq', 'FAIL') | list | length == 0
+    success_msg: >-
+      {{ inventory_hostname }}: {{ mon_vlan | length }} VLAN gateway(s) OK
+      {{ mon_vlan | map(attribute='id') | list }}
+    fail_msg: "{{ inventory_hostname }}: VLAN problems {{ mon_vlan | selectattr('result', 'eq', 'FAIL') | list }}"

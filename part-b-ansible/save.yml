@@ -1,0 +1,19 @@
+---
+# save.yml - copy running-config to startup-config on demand
+#   ansible-playbook save.yml --limit HQ-CORE,HQ-DIST
+- name: Save running-config to NVRAM
+  hosts: routers
+  gather_facts: false
+  tasks:
+    - name: write memory (answers the NVRAM overwrite [confirm] prompt if shown)
+      cisco.ios.ios_command:
+        commands:
+          - command: write memory
+            prompt: 'Overwrite the previous NVRAM configuration\?\[confirm\]'
+            answer: "\r"
+            newline: false
+      register: wr
+
+    - name: show result
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ wr.stdout[0] | regex_replace('\\s+', ' ') }}"

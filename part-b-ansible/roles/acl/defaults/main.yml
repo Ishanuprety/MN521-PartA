@@ -1,0 +1,5 @@
+---
+vty_acl: ACL_VTY
+mgmt_acl: ACL_MGMT
+# Part A data-plane ACLs (ACL_OUTSIDE_IN, ACL_DMZ_IN, ACL_GUEST, ACL_DC_IN) are
+# deliberately NOT managed here; they are verified by the monitoring role.

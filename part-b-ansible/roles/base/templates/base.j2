@@ -1,0 +1,12 @@
+{# Global identity / services - rendered per device #}
+hostname {{ base_hostname }}
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+{% if not ip_domain_lookup | default(false) %}
+no ip domain lookup
+{% endif %}
+ip domain name {{ domain_name }}
+ip name-server {{ dns_server }}
+no ip http server
+no ip http secure-server

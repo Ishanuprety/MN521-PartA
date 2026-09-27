@@ -1,0 +1,15 @@
+### HQ-CORE - show ip interface brief (2026-09-27)
+Interface                  IP-Address      OK? Method Status                Protocol
+FastEthernet0/0            10.255.0.18     YES NVRAM  up                    up      
+FastEthernet1/0            10.255.0.1      YES NVRAM  up                    up      
+FastEthernet2/0            10.255.0.9      YES NVRAM  up                    up      
+FastEthernet3/0            10.255.0.21     YES NVRAM  down                  down    
+Loopback0                  1.1.1.1         YES NVRAM  up                    up
+
+### HQ-CORE - show interfaces description
+Interface                      Status         Protocol Description
+Fa0/0                          up             up       TO_FW-EDGE
+Fa1/0                          up             up       WAN_TO_DC-EDGE
+Fa2/0                          up             up       WAN_TO_HQ-DIST
+Fa3/0                          down           down     BACKUP_WAN_TO_BR
+Lo0                            up             up

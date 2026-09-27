@@ -1,0 +1,33 @@
+### HQ-DIST - pings from the router (2026-09-27)
+HQ-DIST# ping 10.20.30.11 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 10.20.30.11, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 28/28/28 ms
+
+HQ-DIST# ping 10.20.30.12 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 10.20.30.12, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 28/29/32 ms
+
+HQ-DIST# ping 2.2.2.2 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 2.2.2.2, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 16/17/20 ms
+
+HQ-DIST# ping 4.4.4.4 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 4.4.4.4, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 16/25/32 ms
+
+### control node -> 1.1.1.4
+PING 1.1.1.4 (1.1.1.4) 56(84) bytes of data.
+64 bytes from 1.1.1.4: icmp_seq=1 ttl=255 time=1.62 ms
+64 bytes from 1.1.1.4: icmp_seq=2 ttl=255 time=3.48 ms
+
+--- 1.1.1.4 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1002ms
+rtt min/avg/max/mdev = 1.622/2.548/3.475/0.926 ms

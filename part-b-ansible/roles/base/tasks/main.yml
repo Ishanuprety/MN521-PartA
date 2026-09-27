@@ -1,0 +1,32 @@
+---
+- name: Base | hostname and global services from template
+  cisco.ios.ios_config:
+    src: base.j2
+  notify: save config
+  tags: [hostname]
+
+# IOS 15.0 on the c7200 has no "show banner", so ios_banner cannot read the
+# current banner. Read it from the running-config and push only on a difference.
+- name: Base | read current MOTD banner from running-config
+  cisco.ios.ios_command:
+    commands: show running-config | begin banner motd
+  register: banner_running
+  changed_when: false
+  tags: [banner]
+
+- name: Base | compare running banner with the intended banner
+  ansible.builtin.set_fact:
+    banner_current: >-
+      {{ banner_running.stdout[0] | regex_findall('(?s)banner motd \^C(.*?)\^C') | first | default('')
+         | split('\n') | map('trim') | join('\n') | trim }}
+    banner_wanted: "{{ banner_motd | split('\n') | map('trim') | join('\n') | trim }}"
+  tags: [banner]
+
+- name: Base | MOTD login banner (pushed only when it differs)
+  cisco.ios.ios_banner:
+    banner: motd
+    text: "{{ banner_motd }}"
+    state: present
+  when: banner_current != banner_wanted
+  notify: save config
+  tags: [banner]

@@ -1,0 +1,52 @@
+---
+- name: Interfaces | collect interface state
+  cisco.ios.ios_command:
+    commands:
+      - show ip interface brief
+      - show interfaces description
+  register: intf_out
+  changed_when: false
+
+- name: Interfaces | parse show ip interface brief
+  ansible.builtin.set_fact:
+    mon_intf: >-
+      {%- set rows = [] -%}
+      {%- for m in intf_out.stdout[0] | regex_findall('(?m)^(\S+)\s+(\S+)\s+\S+\s+\S+\s+(up|down|administratively down)\s+(up|down)\s*$') -%}
+      {%- set st = 'OK' if (m[2] == 'up' and m[3] == 'up') else ('INFO' if m[1] == 'unassigned' or m[2] == 'administratively down' else 'WARN') -%}
+      {%- set _ = rows.append({'interface': m[0], 'ip': m[1], 'status': m[2], 'protocol': m[3], 'result': st}) -%}
+      {%- endfor -%}
+      {{ rows }}
+
+- name: Interfaces | save raw output (reports/interfaces/<host>.txt)
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/interfaces/{{ inventory_hostname }}.txt"
+    mode: "0644"
+    content: |
+      ### {{ inventory_hostname }} - show ip interface brief ({{ run_date }})
+      {{ intf_out.stdout[0] }}
+
+      ### {{ inventory_hostname }} - show interfaces description
+      {{ intf_out.stdout[1] }}
+  delegate_to: localhost
+
+- name: Interfaces | write reports/interfaces_summary.csv
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/interfaces_summary.csv"
+    mode: "0644"
+    content: |
+      host,interface,ip,status,protocol,result
+      {% for h in ansible_play_hosts %}
+      {% for r in hostvars[h].mon_intf %}
+      {{ h }},{{ r.interface }},{{ r.ip }},{{ r.status }},{{ r.protocol }},{{ r.result }}
+      {% endfor %}
+      {% endfor %}
+  delegate_to: localhost
+  run_once: true
+
+- name: Interfaces | summary
+  ansible.builtin.debug:
+    msg: >-
+      {{ inventory_hostname }}: {{ mon_intf | selectattr('result', 'eq', 'OK') | list | length }} up/up,
+      {{ mon_intf | selectattr('result', 'eq', 'WARN') | list | length }} addressed-but-down
+      ({{ mon_intf | selectattr('result', 'eq', 'WARN') | map(attribute='interface') | join(', ') or 'none' }}),
+      {{ mon_intf | length }} interfaces total

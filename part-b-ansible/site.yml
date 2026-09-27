@@ -1,0 +1,38 @@
+---
+# site.yml - build / enforce the intended configuration on every router.
+#   ansible-playbook site.yml --vault-password-file ~/.vault_pass
+#   ansible-playbook site.yml --tags ntp,syslog    (only NTP + syslog tasks)
+#   ansible-playbook site.yml --limit hq --check --diff
+- name: MN521 enterprise configuration (Infrastructure as Code)
+  hosts: routers
+  gather_facts: false
+
+  roles:
+    - { role: base,       tags: [base] }
+    - { role: ssh,        tags: [ssh, security] }
+    - { role: ntp_syslog, tags: [ntp_syslog] }
+    - { role: vlans,      tags: [vlans] }
+    - { role: ospf,       tags: [ospf, routing] }
+    - { role: acl,        tags: [acl, security] }
+
+  handlers:
+    # Fired once per router at the end of the play, only if a task changed config.
+    - name: save config
+      cisco.ios.ios_command:
+        commands:
+          # NVRAM written by an older IOS image makes "write memory" ask
+          # "Overwrite the previous NVRAM configuration?[confirm]"; answer it.
+          - command: write memory
+            prompt: 'Overwrite the previous NVRAM configuration\?\[confirm\]'
+            answer: "\r"
+            newline: false
+
+    - name: record change
+      ansible.builtin.lineinfile:
+        path: "{{ report_dir }}/change_log.csv"
+        line: "{{ lookup('ansible.builtin.pipe', 'date +%Y-%m-%dT%H:%M:%S%z') }},{{ inventory_hostname }},running-config saved (write memory)"
+        create: true
+        mode: "0644"
+      delegate_to: localhost
+      throttle: 1
+      listen: save config

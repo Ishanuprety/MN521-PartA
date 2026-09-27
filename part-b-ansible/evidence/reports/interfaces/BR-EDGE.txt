@@ -1,0 +1,21 @@
+### BR-EDGE - show ip interface brief (2026-09-27)
+Interface                  IP-Address      OK? Method Status                Protocol
+FastEthernet0/0            10.255.0.6      YES NVRAM  up                    up      
+FastEthernet1/0            unassigned      YES NVRAM  up                    up      
+FastEthernet1/0.40         10.30.40.1      YES NVRAM  up                    up      
+FastEthernet1/0.50         10.30.50.1      YES NVRAM  up                    up      
+FastEthernet2/0            10.255.0.22     YES NVRAM  up                    up      
+FastEthernet3/0            unassigned      YES NVRAM  up                    up      
+FastEthernet3/0.40         unassigned      YES unset  administratively down down    
+Loopback0                  3.3.3.3         YES NVRAM  up                    up
+
+### BR-EDGE - show interfaces description
+Interface                      Status         Protocol Description
+Fa0/0                          up             up       WAN_TO_DC-EDGE
+Fa1/0                          up             up       TRUNK_TO_SW-BR-1
+Fa1/0.40                       up             up       VLAN40_BR_STAFF
+Fa1/0.50                       up             up       VLAN50_BR_GUEST
+Fa2/0                          up             up       BACKUP_WAN_TO_HQ
+Fa3/0                          up             up       TO_SW-BR-DIST
+Fa3/0.40                       admin down     down     
+Lo0                            up             up
