@@ -1,0 +1,9 @@
+ip domain name {{ domain_name }}
+ip ssh version {{ ssh_version }}
+ip ssh time-out {{ ssh_timeout }}
+ip ssh authentication-retries {{ ssh_auth_retries }}
+line vty {{ vty_lines }}
+ exec-timeout {{ vty_exec_timeout }}
+ access-class {{ vty_acl }} in
+ login local
+ transport input ssh

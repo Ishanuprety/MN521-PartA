@@ -1,0 +1,20 @@
+---
+- name: ACL | management ACLs from template (ACL_VTY + ACL_MGMT)
+  cisco.ios.ios_config:
+    src: acl.j2
+  notify: save config
+
+- name: ACL | read VTY line configuration
+  cisco.ios.ios_command:
+    commands: show running-config | section line vty
+  register: vty_cfg
+  changed_when: false
+  tags: [verify]
+
+- name: ACL | assert ACL_VTY is applied inbound on the VTY lines
+  ansible.builtin.assert:
+    that: "'access-class ' ~ vty_acl ~ ' in' in vty_cfg.stdout[0]"
+    success_msg: "{{ inventory_hostname }}: {{ vty_acl }} applied to line vty"
+    fail_msg: "{{ inventory_hostname }}: {{ vty_acl }} missing on line vty"
+    quiet: true
+  tags: [verify]

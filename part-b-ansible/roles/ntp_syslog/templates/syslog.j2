@@ -1,0 +1,4 @@
+service timestamps log datetime msec
+{% for server in syslog_servers %}
+logging {{ server }}
+{% endfor %}

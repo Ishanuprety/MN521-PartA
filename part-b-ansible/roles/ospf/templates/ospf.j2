@@ -1,0 +1,12 @@
+router ospf {{ ospf_process_id }}
+ router-id {{ ospf.router_id }}
+ log-adjacency-changes
+{% for intf in ospf.passive_interfaces %}
+ passive-interface {{ intf }}
+{% endfor %}
+{% for n in ospf.networks %}
+ network {{ n.net }} {{ n.wildcard }} area {{ n.area }}
+{% endfor %}
+{% if ospf.default_originate | default(false) %}
+ default-information originate
+{% endif %}

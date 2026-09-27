@@ -1,0 +1,12 @@
+---
+- name: NTP | point clock at the DC NTP server(s)
+  cisco.ios.ios_config:
+    src: ntp.j2
+  notify: save config
+  tags: [ntp]
+
+- name: Syslog | send logs to the DC syslog server(s)
+  cisco.ios.ios_config:
+    src: syslog.j2
+  notify: save config
+  tags: [syslog]

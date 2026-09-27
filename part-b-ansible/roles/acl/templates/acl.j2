@@ -1,0 +1,13 @@
+{# NOTE: IOS prints 'deny' with three spaces; the lines below match the
+   running-config text exactly so ios_config stays idempotent. #}
+ip access-list extended {{ vty_acl }}
+{% for s in mgmt_subnets %}
+ permit tcp {{ s.net }} {{ s.wildcard }} any eq 22
+{% endfor %}
+ deny   ip any any
+ip access-list standard {{ mgmt_acl }}
+ remark Management subnets - reserved for SNMP/NTP access-group
+{% for s in mgmt_subnets %}
+ permit {{ s.net }} {{ s.wildcard }}
+{% endfor %}
+ deny   any log

@@ -1,0 +1,22 @@
+---
+- name: OSPF | multi-area OSPF process from template
+  cisco.ios.ios_config:
+    src: ospf.j2
+  notify: save config
+
+- name: OSPF | read neighbour table
+  cisco.ios.ios_command:
+    commands: show ip ospf neighbor
+  register: ospf_nbr
+  changed_when: false
+  tags: [verify]
+
+- name: OSPF | assert every expected neighbour is FULL
+  ansible.builtin.assert:
+    that: >-
+      ospf_nbr.stdout[0] | regex_search(item | regex_escape ~ '\s+\d+\s+FULL') is not none
+    fail_msg: "{{ inventory_hostname }}: OSPF neighbour {{ item }} is not FULL"
+    success_msg: "{{ inventory_hostname }}: neighbour {{ item }} FULL"
+    quiet: true
+  loop: "{{ ospf_expected_neighbors }}"
+  tags: [verify]
