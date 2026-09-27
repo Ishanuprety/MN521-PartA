@@ -1,0 +1,6 @@
+host,full_neighbors,expected_neighbors,missing,ospf_routes,connected_routes,gateway_of_last_resort,result
+HQ-CORE,4.4.4.4 1.1.1.4 2.2.2.2,1.1.1.4 2.2.2.2 4.4.4.4,-,14,4,10.255.0.17,OK
+HQ-DIST,1.1.1.1,1.1.1.1,-,13,5,10.255.0.9,OK
+DC-EDGE,3.3.3.3 1.1.1.1,1.1.1.1 3.3.3.3,-,14,4,10.255.0.1,OK
+BR-EDGE,2.2.2.2,2.2.2.2,-,13,5,10.255.0.5,OK
+FW-EDGE,1.1.1.1,1.1.1.1,-,14,4,192.168.122.1,OK

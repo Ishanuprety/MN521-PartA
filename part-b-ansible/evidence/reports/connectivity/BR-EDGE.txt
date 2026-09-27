@@ -1,0 +1,33 @@
+### BR-EDGE - pings from the router (2026-09-27)
+BR-EDGE# ping 10.20.30.11 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 10.20.30.11, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 20/20/20 ms
+
+BR-EDGE# ping 10.20.30.12 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 10.20.30.12, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 20/22/28 ms
+
+BR-EDGE# ping 1.1.1.1 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 1.1.1.1, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 20/20/20 ms
+
+BR-EDGE# ping 10.10.99.1 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 10.10.99.1, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 24/28/32 ms
+
+### control node -> 3.3.3.3
+PING 3.3.3.3 (3.3.3.3) 56(84) bytes of data.
+64 bytes from 3.3.3.3: icmp_seq=1 ttl=252 time=56.0 ms
+64 bytes from 3.3.3.3: icmp_seq=2 ttl=252 time=37.7 ms
+
+--- 3.3.3.3 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 37.697/46.861/56.026/9.164 ms

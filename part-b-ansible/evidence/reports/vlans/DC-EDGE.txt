@@ -1,0 +1,2 @@
+### DC-EDGE - show vlans (2026-09-27)
+No Virtual LANs configured.

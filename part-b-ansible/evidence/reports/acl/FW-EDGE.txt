@@ -1,0 +1,53 @@
+### FW-EDGE - show ip access-lists (2026-09-27)
+Standard IP access list 10
+    10 permit 10.0.0.0, wildcard bits 0.255.255.255 (1436 matches)
+Standard IP access list ACL_MGMT
+    10 permit 10.10.99.0, wildcard bits 0.0.0.255
+    20 permit 10.20.30.0, wildcard bits 0.0.0.255
+    30 deny   any log
+Extended IP access list ACL_DMZ_IN
+    10 permit udp any host 10.20.30.10 eq domain (4 matches)
+    20 permit tcp any host 10.20.30.10 eq domain
+    30 permit tcp any eq www 10.0.0.0 0.255.255.255 established
+    40 permit tcp any eq 443 10.0.0.0 0.255.255.255 established
+    50 permit icmp any 10.0.0.0 0.255.255.255 echo-reply (5 matches)
+    60 deny ip any 10.10.0.0 0.0.255.255 (4 matches)
+    70 deny ip any 10.20.0.0 0.0.255.255 (4 matches)
+    80 deny ip any 10.30.0.0 0.0.255.255
+    90 permit tcp any any eq www
+    100 permit tcp any any eq 443
+    110 permit icmp any any (8 matches)
+    120 permit ip any any (15 matches)
+Extended IP access list ACL_OUTSIDE_IN
+    10 deny ip 10.10.0.0 0.0.255.255 any log
+    20 deny ip 10.20.0.0 0.0.255.255 any log
+    30 deny ip 10.30.0.0 0.0.255.255 any log
+    40 deny ip 10.60.60.0 0.0.0.255 any log
+    50 deny ip 10.255.0.0 0.0.0.255 any log
+    60 deny ip 127.0.0.0 0.255.255.255 any log
+    70 deny ip 169.254.0.0 0.0.255.255 any log
+    80 permit tcp any any eq www (15 matches)
+    90 permit udp any eq bootps any eq bootpc (8 matches)
+    100 permit tcp any any established (4137 matches)
+    110 permit udp any any gt 1023 (14 matches)
+    120 permit udp any eq ntp any eq ntp
+    130 permit icmp any any echo-reply (64 matches)
+    140 permit icmp any any unreachable
+    150 permit icmp any any time-exceeded
+    160 deny ip any any log (4 matches)
+Extended IP access list ACL_VTY
+    10 permit tcp 10.10.99.0 0.0.0.255 any eq 22 (54 matches)
+    20 permit tcp 10.20.30.0 0.0.0.255 any eq 22
+    30 deny ip any any
+
+### FW-EDGE - ACL attachment points
+interface Loopback0
+interface FastEthernet0/0
+ ip access-group ACL_OUTSIDE_IN in
+interface FastEthernet1/0
+interface FastEthernet2/0
+interface FastEthernet2/0.60
+ ip access-group ACL_DMZ_IN in
+interface FastEthernet3/0
+ remark Management subnets - reserved for SNMP/NTP access-group
+ access-class ACL_VTY in

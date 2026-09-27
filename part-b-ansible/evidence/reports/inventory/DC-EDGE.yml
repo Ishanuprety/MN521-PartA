@@ -1,0 +1,10 @@
+hostname: DC-EDGE
+image: tftp://255.255.255.255/unknown
+ios_version: 15.0(1)M
+mem_total_mb: '118.53946304321289'
+mgmt_ip: 2.2.2.2
+model: 7206VXR
+role: DC gateway (VLAN 30 servers), ABR area 0-20
+serial: '4279256517'
+site: DC
+uptime: 1 hour, 4 minutes

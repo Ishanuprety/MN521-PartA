@@ -1,0 +1,28 @@
+### BR-EDGE - show ip access-lists (2026-09-27)
+Standard IP access list ACL_MGMT
+    10 permit 10.10.99.0, wildcard bits 0.0.0.255
+    20 permit 10.20.30.0, wildcard bits 0.0.0.255
+    30 deny   any log
+Extended IP access list ACL_GUEST
+    5 permit udp any host 10.20.30.10 eq domain
+    6 permit tcp any host 10.20.30.10 eq domain
+    10 deny ip 10.30.50.0 0.0.0.255 10.10.99.0 0.0.0.255
+    20 deny ip 10.30.50.0 0.0.0.255 10.20.30.0 0.0.0.255
+    30 permit ip any any
+Extended IP access list ACL_VTY
+    10 permit tcp 10.10.99.0 0.0.0.255 any eq 22 (46 matches)
+    20 permit tcp 10.20.30.0 0.0.0.255 any eq 22
+    30 deny ip any any
+
+### BR-EDGE - ACL attachment points
+interface Loopback0
+interface FastEthernet0/0
+interface FastEthernet1/0
+interface FastEthernet1/0.40
+interface FastEthernet1/0.50
+ ip access-group ACL_GUEST in
+interface FastEthernet2/0
+interface FastEthernet3/0
+interface FastEthernet3/0.40
+ remark Management subnets - reserved for SNMP/NTP access-group
+ access-class ACL_VTY in

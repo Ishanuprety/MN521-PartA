@@ -1,0 +1,10 @@
+hostname: FW-EDGE
+image: tftp://255.255.255.255/unknown
+ios_version: 15.0(1)M
+mem_total_mb: '118.5392951965332'
+mgmt_ip: 4.4.4.4
+model: 7206VXR
+role: Internet edge / DMZ gateway, NAT, OSPF ASBR
+serial: '4279256517'
+site: EDGE
+uptime: 1 hour, 4 minutes

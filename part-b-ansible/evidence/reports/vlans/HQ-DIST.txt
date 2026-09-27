@@ -1,0 +1,67 @@
+### HQ-DIST - show vlans (2026-09-27)
+Virtual LAN ID:  1 (IEEE 802.1Q Encapsulation)
+
+   vLAN Trunk Interfaces:  FastEthernet1/0
+FastEthernet2/0
+
+ This is configured as native Vlan for the following interface(s) :
+FastEthernet1/0
+FastEthernet2/0
+
+   Protocols Configured:   Address:              Received:        Transmitted:
+        Other                                           0                 898
+
+   72 packets, 24459 bytes input
+   449 packets, 31245 bytes output
+        Other                                           0                 898
+
+   72 packets, 24459 bytes input
+   449 packets, 31245 bytes output
+
+Virtual LAN ID:  10 (IEEE 802.1Q Encapsulation)
+
+   vLAN Trunk Interfaces:  FastEthernet1/0.10
+FastEthernet2/0.10
+
+   Protocols Configured:   Address:              Received:        Transmitted:
+           IP              10.10.10.1                   0                   0
+        Other                                           0                   2
+
+   2 packets, 132 bytes input
+   2 packets, 92 bytes output
+        Other                                           0                   2
+
+   4 packets, 260 bytes input
+   0 packets, 0 bytes output
+
+Virtual LAN ID:  20 (IEEE 802.1Q Encapsulation)
+
+   vLAN Trunk Interfaces:  FastEthernet1/0.20
+FastEthernet2/0.20
+
+   Protocols Configured:   Address:              Received:        Transmitted:
+           IP              10.10.20.1                   0                   0
+        Other                                           0                   2
+
+   2 packets, 132 bytes input
+   2 packets, 92 bytes output
+        Other                                           0                   2
+
+   4 packets, 260 bytes input
+   0 packets, 0 bytes output
+
+Virtual LAN ID:  99 (IEEE 802.1Q Encapsulation)
+
+   vLAN Trunk Interfaces:  FastEthernet1/0.99
+FastEthernet2/0.99
+
+   Protocols Configured:   Address:              Received:        Transmitted:
+           IP              10.10.99.1               39967               47169
+        Other                                           0                  13
+
+   39994 packets, 2741633 bytes input
+   47184 packets, 9441895 bytes output
+        Other                                           0                  13
+
+   57 packets, 7922 bytes input
+   0 packets, 0 bytes output

@@ -1,0 +1,130 @@
+Using /root/part-b-ansible/ansible.cfg as config file
+
+PLAY [MN521 enterprise configuration (Infrastructure as Code)] *****************
+
+TASK [base : Base | hostname and global services from template] ****************
+ok: [HQ-CORE] => {"changed": false}
+ok: [HQ-DIST] => {"changed": false}
+ok: [DC-EDGE] => {"changed": false}
+ok: [BR-EDGE] => {"changed": false}
+changed: [FW-EDGE] => {"banners": {}, "changed": true, "commands": ["service password-encryption"], "updates": ["service password-encryption"]}
+
+TASK [base : Base | read current MOTD banner from running-config] **************
+ok: [DC-EDGE] => {"changed": false, "stdout": ["banner motd ^C MN521 Part A b\nAuthorized access only ^C\n!\nline con 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline aux 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline vty 0 4\n access-class ACL_VTY in\n login local\n transport input ssh\n!\nntp server 10.20.30.11\nend"], "stdout_lines": [["banner motd ^C MN521 Part A b", "Authorized access only ^C", "!", "line con 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line aux 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line vty 0 4", " access-class ACL_VTY in", " login local", " transport input ssh", "!", "ntp server 10.20.30.11", "end"]]}
+ok: [HQ-CORE] => {"changed": false, "stdout": ["banner motd ^C MN521 Part A b\nAuthorized access only ^C\n!\nline con 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline aux 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline vty 0 4\n access-class ACL_VTY in\n login local\n transport input ssh\n!\nntp server 10.20.30.11\nend"], "stdout_lines": [["banner motd ^C MN521 Part A b", "Authorized access only ^C", "!", "line con 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line aux 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line vty 0 4", " access-class ACL_VTY in", " login local", " transport input ssh", "!", "ntp server 10.20.30.11", "end"]]}
+ok: [FW-EDGE] => {"changed": false, "stdout": ["banner motd ^C MN521 FW-EDGE b\nDMZ/Internet edge ^C\n!\nline con 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline aux 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline vty 0 4\n access-class ACL_VTY in\n login local\n transport input ssh\n!\nntp server 10.20.30.11\nend"], "stdout_lines": [["banner motd ^C MN521 FW-EDGE b", "DMZ/Internet edge ^C", "!", "line con 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line aux 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line vty 0 4", " access-class ACL_VTY in", " login local", " transport input ssh", "!", "ntp server 10.20.30.11", "end"]]}
+ok: [HQ-DIST] => {"changed": false, "stdout": ["banner motd ^C MN521 Part A b\nAuthorized access only ^C\n!\nline con 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline aux 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline vty 0 4\n access-class ACL_VTY in\n login local\n transport input ssh\n!\nntp server 10.20.30.11\nend"], "stdout_lines": [["banner motd ^C MN521 Part A b", "Authorized access only ^C", "!", "line con 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line aux 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line vty 0 4", " access-class ACL_VTY in", " login local", " transport input ssh", "!", "ntp server 10.20.30.11", "end"]]}
+ok: [BR-EDGE] => {"changed": false, "stdout": ["banner motd ^C MN521 Part A b\nAuthorized access only ^C\n!\nline con 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline aux 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline vty 0 4\n access-class ACL_VTY in\n login local\n transport input ssh\n!\nntp server 10.20.30.11\nend"], "stdout_lines": [["banner motd ^C MN521 Part A b", "Authorized access only ^C", "!", "line con 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line aux 0", " exec-timeout 0 0", " privilege level 15", " logging synchronous", " stopbits 1", "line vty 0 4", " access-class ACL_VTY in", " login local", " transport input ssh", "!", "ntp server 10.20.30.11", "end"]]}
+
+TASK [base : Base | compare running banner with the intended banner] ***********
+ok: [BR-EDGE] => {"ansible_facts": {"banner_current": "MN521 Part A b\nAuthorized access only", "banner_wanted": "MN521 Part A b\nAuthorized access only"}, "changed": false}
+ok: [FW-EDGE] => {"ansible_facts": {"banner_current": "MN521 FW-EDGE b\nDMZ/Internet edge", "banner_wanted": "MN521 FW-EDGE b\nDMZ/Internet edge"}, "changed": false}
+ok: [DC-EDGE] => {"ansible_facts": {"banner_current": "MN521 Part A b\nAuthorized access only", "banner_wanted": "MN521 Part A b\nAuthorized access only"}, "changed": false}
+ok: [HQ-CORE] => {"ansible_facts": {"banner_current": "MN521 Part A b\nAuthorized access only", "banner_wanted": "MN521 Part A b\nAuthorized access only"}, "changed": false}
+ok: [HQ-DIST] => {"ansible_facts": {"banner_current": "MN521 Part A b\nAuthorized access only", "banner_wanted": "MN521 Part A b\nAuthorized access only"}, "changed": false}
+
+TASK [ssh : SSH | SSHv2, timers and VTY access (SSH only, ACL-protected)] ******
+changed: [HQ-CORE] => {"banners": {}, "changed": true, "commands": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"], "updates": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"]}
+changed: [HQ-DIST] => {"banners": {}, "changed": true, "commands": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"], "updates": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"]}
+changed: [DC-EDGE] => {"banners": {}, "changed": true, "commands": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"], "updates": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"]}
+changed: [FW-EDGE] => {"banners": {}, "changed": true, "commands": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"], "updates": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"]}
+changed: [BR-EDGE] => {"banners": {}, "changed": true, "commands": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"], "updates": ["ip ssh time-out 60", "ip ssh authentication-retries 2", "line vty 0 4", "exec-timeout 15 0"]}
+
+TASK [ssh : SSH | read SSH server state] ***************************************
+ok: [HQ-CORE] => {"changed": false, "stdout": ["SSH Enabled - version 2.0\nAuthentication timeout: 60 secs; Authentication retries: 2\nMinimum expected Diffie Hellman key size : 1024 bits\nIOS Keys in SECSH format(ssh-rsa, base64 encoded):\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCH4uGD377vu/KOh8NZ7F8NcXqozWzzIVxO\nD+l2/t4+46uZ+vCNZAqjfqRYMyUzukrcONZq1U4Y8SAr0f/MQKkkRafXGNHtpkl3\n/tZozDTswkBsNO6LQI1XEbSi/2/dNF5qXt+3iAAf8DJ804AwZM8dscn/WXZPI3ly\n0ScggdYhiw=="], "stdout_lines": [["SSH Enabled - version 2.0", "Authentication timeout: 60 secs; Authentication retries: 2", "Minimum expected Diffie Hellman key size : 1024 bits", "IOS Keys in SECSH format(ssh-rsa, base64 encoded):", "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCH4uGD377vu/KOh8NZ7F8NcXqozWzzIVxO", "D+l2/t4+46uZ+vCNZAqjfqRYMyUzukrcONZq1U4Y8SAr0f/MQKkkRafXGNHtpkl3", "/tZozDTswkBsNO6LQI1XEbSi/2/dNF5qXt+3iAAf8DJ804AwZM8dscn/WXZPI3ly", "0ScggdYhiw=="]]}
+ok: [FW-EDGE] => {"changed": false, "stdout": ["SSH Enabled - version 2.0\nAuthentication timeout: 60 secs; Authentication retries: 2\nMinimum expected Diffie Hellman key size : 1024 bits\nIOS Keys in SECSH format(ssh-rsa, base64 encoded):\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDGbxbJMZMnFqEZZh+Fy7ftAvQXduEAzh5Z\nL3WTFY3ihMD+nmMMvmYbU2NSTYjpGEBM9eIUiYTOjwzEqTyIRh7Z+H56BH9jFOmi\nxX30fFFzX/24Zn2GViBNQeanByBSY8VEWqwvUYMhizzpTLAKkofXt9eUIOESmjee\nJTUOCddu1Q=="], "stdout_lines": [["SSH Enabled - version 2.0", "Authentication timeout: 60 secs; Authentication retries: 2", "Minimum expected Diffie Hellman key size : 1024 bits", "IOS Keys in SECSH format(ssh-rsa, base64 encoded):", "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDGbxbJMZMnFqEZZh+Fy7ftAvQXduEAzh5Z", "L3WTFY3ihMD+nmMMvmYbU2NSTYjpGEBM9eIUiYTOjwzEqTyIRh7Z+H56BH9jFOmi", "xX30fFFzX/24Zn2GViBNQeanByBSY8VEWqwvUYMhizzpTLAKkofXt9eUIOESmjee", "JTUOCddu1Q=="]]}
+ok: [DC-EDGE] => {"changed": false, "stdout": ["SSH Enabled - version 2.0\nAuthentication timeout: 60 secs; Authentication retries: 2\nMinimum expected Diffie Hellman key size : 1024 bits\nIOS Keys in SECSH format(ssh-rsa, base64 encoded):\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDHOjiGgRq6n1P3BHMA9WOZY1j0GNiCTO+g\nw+TBg3CXh6sJh35RipcbL9Qc0aSO0ozwR9GsuL/SMzFb0GzdJg6j4a7BQciklKNl\n0hie+Cf25dexyUIReDTAL4YslnWFaO2613poYoLXT1rc/QR7+ewf9n7ahsO+ygrw\nnSiy/8NHRQ=="], "stdout_lines": [["SSH Enabled - version 2.0", "Authentication timeout: 60 secs; Authentication retries: 2", "Minimum expected Diffie Hellman key size : 1024 bits", "IOS Keys in SECSH format(ssh-rsa, base64 encoded):", "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDHOjiGgRq6n1P3BHMA9WOZY1j0GNiCTO+g", "w+TBg3CXh6sJh35RipcbL9Qc0aSO0ozwR9GsuL/SMzFb0GzdJg6j4a7BQciklKNl", "0hie+Cf25dexyUIReDTAL4YslnWFaO2613poYoLXT1rc/QR7+ewf9n7ahsO+ygrw", "nSiy/8NHRQ=="]]}
+ok: [HQ-DIST] => {"changed": false, "stdout": ["SSH Enabled - version 2.0\nAuthentication timeout: 60 secs; Authentication retries: 2\nMinimum expected Diffie Hellman key size : 1024 bits\nIOS Keys in SECSH format(ssh-rsa, base64 encoded):\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDMAkHuSQ3eoP8mZsPvtfbYW3gfV6DVTS8b\n4JfDS6aYirqmzBJ7DTN5xZppQuX6BCm4s7inzZQTJxL3zIGSP587CC8hKeWxsROs\n8tGLFzL9RJCn/nzjX2k7NFrdOyabsHdJ8//jY5x2sVWmqxBNrz0Qy9gnttf5RTLN\nHXukdT89bw=="], "stdout_lines": [["SSH Enabled - version 2.0", "Authentication timeout: 60 secs; Authentication retries: 2", "Minimum expected Diffie Hellman key size : 1024 bits", "IOS Keys in SECSH format(ssh-rsa, base64 encoded):", "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDMAkHuSQ3eoP8mZsPvtfbYW3gfV6DVTS8b", "4JfDS6aYirqmzBJ7DTN5xZppQuX6BCm4s7inzZQTJxL3zIGSP587CC8hKeWxsROs", "8tGLFzL9RJCn/nzjX2k7NFrdOyabsHdJ8//jY5x2sVWmqxBNrz0Qy9gnttf5RTLN", "HXukdT89bw=="]]}
+ok: [BR-EDGE] => {"changed": false, "stdout": ["SSH Enabled - version 2.0\nAuthentication timeout: 60 secs; Authentication retries: 2\nMinimum expected Diffie Hellman key size : 1024 bits\nIOS Keys in SECSH format(ssh-rsa, base64 encoded):\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDGgLkpLPExCsROCh/8TaZVptxGPrpRrrtN\nqfad4PXWTuiYp9kUlekYXPTbkI7ShDBnJreifEx22Jbawux+u6qBikKuMBFhUEDf\n0yJRqRDO5dMIcm8fgbrf060V0UqkN2yr4ZA4NFUd8mxpbpzMuH2EmRzat5FLgn2c\ndpaitgQexw=="], "stdout_lines": [["SSH Enabled - version 2.0", "Authentication timeout: 60 secs; Authentication retries: 2", "Minimum expected Diffie Hellman key size : 1024 bits", "IOS Keys in SECSH format(ssh-rsa, base64 encoded):", "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDGgLkpLPExCsROCh/8TaZVptxGPrpRrrtN", "qfad4PXWTuiYp9kUlekYXPTbkI7ShDBnJreifEx22Jbawux+u6qBikKuMBFhUEDf", "0yJRqRDO5dMIcm8fgbrf060V0UqkN2yr4ZA4NFUd8mxpbpzMuH2EmRzat5FLgn2c", "dpaitgQexw=="]]}
+
+TASK [ssh : SSH | assert SSH version 2 is enabled] *****************************
+ok: [HQ-DIST] => {"changed": false, "msg": "HQ-DIST: SSH Enabled - version 2.0"}
+ok: [HQ-CORE] => {"changed": false, "msg": "HQ-CORE: SSH Enabled - version 2.0"}
+ok: [FW-EDGE] => {"changed": false, "msg": "FW-EDGE: SSH Enabled - version 2.0"}
+ok: [DC-EDGE] => {"changed": false, "msg": "DC-EDGE: SSH Enabled - version 2.0"}
+ok: [BR-EDGE] => {"changed": false, "msg": "BR-EDGE: SSH Enabled - version 2.0"}
+
+TASK [ntp_syslog : NTP | point clock at the DC NTP server(s)] ******************
+ok: [HQ-CORE] => {"changed": false}
+ok: [FW-EDGE] => {"changed": false}
+ok: [DC-EDGE] => {"changed": false}
+ok: [HQ-DIST] => {"changed": false}
+ok: [BR-EDGE] => {"changed": false}
+
+TASK [ntp_syslog : Syslog | send logs to the DC syslog server(s)] **************
+ok: [HQ-CORE] => {"changed": false}
+ok: [FW-EDGE] => {"changed": false}
+ok: [DC-EDGE] => {"changed": false}
+ok: [HQ-DIST] => {"changed": false}
+ok: [BR-EDGE] => {"changed": false}
+
+TASK [vlans : VLANs | configure VLAN gateway subinterfaces] ********************
+ok: [DC-EDGE] => {"changed": false}
+changed: [FW-EDGE] => {"banners": {}, "changed": true, "commands": ["interface FastEthernet2/0.60", "description VLAN60_DMZ"], "updates": ["interface FastEthernet2/0.60", "description VLAN60_DMZ"]}
+changed: [HQ-DIST] => {"banners": {}, "changed": true, "commands": ["interface FastEthernet1/0.10", "description VLAN10_HQ_USERS", "interface FastEthernet1/0.20", "description VLAN20_HQ_CORPORATE", "interface FastEthernet1/0.99", "description VLAN99_HQ_MGMT"], "updates": ["interface FastEthernet1/0.10", "description VLAN10_HQ_USERS", "interface FastEthernet1/0.20", "description VLAN20_HQ_CORPORATE", "interface FastEthernet1/0.99", "description VLAN99_HQ_MGMT"]}
+changed: [BR-EDGE] => {"banners": {}, "changed": true, "commands": ["interface FastEthernet1/0.40", "description VLAN40_BR_STAFF", "interface FastEthernet1/0.50", "description VLAN50_BR_GUEST"], "updates": ["interface FastEthernet1/0.40", "description VLAN40_BR_STAFF", "interface FastEthernet1/0.50", "description VLAN50_BR_GUEST"]}
+
+TASK [ospf : OSPF | multi-area OSPF process from template] *********************
+ok: [HQ-CORE] => {"changed": false}
+ok: [DC-EDGE] => {"changed": false}
+ok: [HQ-DIST] => {"changed": false}
+ok: [FW-EDGE] => {"changed": false}
+ok: [BR-EDGE] => {"changed": false}
+
+TASK [ospf : OSPF | read neighbour table] **************************************
+ok: [BR-EDGE] => {"changed": false, "stdout": ["Neighbor ID     Pri   State           Dead Time   Address         Interface\n2.2.2.2           1   FULL/DR         00:00:30    10.255.0.5      FastEthernet0/0"], "stdout_lines": [["Neighbor ID     Pri   State           Dead Time   Address         Interface", "2.2.2.2           1   FULL/DR         00:00:30    10.255.0.5      FastEthernet0/0"]]}
+ok: [HQ-DIST] => {"changed": false, "stdout": ["Neighbor ID     Pri   State           Dead Time   Address         Interface\n1.1.1.1           1   FULL/DR         00:00:37    10.255.0.9      FastEthernet0/0"], "stdout_lines": [["Neighbor ID     Pri   State           Dead Time   Address         Interface", "1.1.1.1           1   FULL/DR         00:00:37    10.255.0.9      FastEthernet0/0"]]}
+ok: [HQ-CORE] => {"changed": false, "stdout": ["Neighbor ID     Pri   State           Dead Time   Address         Interface\n4.4.4.4           1   FULL/DR         00:00:36    10.255.0.17     FastEthernet0/0\n1.1.1.4           1   FULL/BDR        00:00:37    10.255.0.10     FastEthernet2/0\n2.2.2.2           1   FULL/DR         00:00:32    10.255.0.2      FastEthernet1/0"], "stdout_lines": [["Neighbor ID     Pri   State           Dead Time   Address         Interface", "4.4.4.4           1   FULL/DR         00:00:36    10.255.0.17     FastEthernet0/0", "1.1.1.4           1   FULL/BDR        00:00:37    10.255.0.10     FastEthernet2/0", "2.2.2.2           1   FULL/DR         00:00:32    10.255.0.2      FastEthernet1/0"]]}
+ok: [FW-EDGE] => {"changed": false, "stdout": ["Neighbor ID     Pri   State           Dead Time   Address         Interface\n1.1.1.1           1   FULL/BDR        00:00:32    10.255.0.18     FastEthernet1/0"], "stdout_lines": [["Neighbor ID     Pri   State           Dead Time   Address         Interface", "1.1.1.1           1   FULL/BDR        00:00:32    10.255.0.18     FastEthernet1/0"]]}
+ok: [DC-EDGE] => {"changed": false, "stdout": ["Neighbor ID     Pri   State           Dead Time   Address         Interface\n3.3.3.3           1   FULL/BDR        00:00:39    10.255.0.6      FastEthernet1/0\n1.1.1.1           1   FULL/BDR        00:00:38    10.255.0.1      FastEthernet0/0"], "stdout_lines": [["Neighbor ID     Pri   State           Dead Time   Address         Interface", "3.3.3.3           1   FULL/BDR        00:00:39    10.255.0.6      FastEthernet1/0", "1.1.1.1           1   FULL/BDR        00:00:38    10.255.0.1      FastEthernet0/0"]]}
+
+TASK [ospf : OSPF | assert every expected neighbour is FULL] *******************
+ok: [DC-EDGE] => (item=1.1.1.1) => {"ansible_loop_var": "item", "changed": false, "item": "1.1.1.1", "msg": "DC-EDGE: neighbour 1.1.1.1 FULL"}
+ok: [BR-EDGE] => (item=2.2.2.2) => {"ansible_loop_var": "item", "changed": false, "item": "2.2.2.2", "msg": "BR-EDGE: neighbour 2.2.2.2 FULL"}
+ok: [DC-EDGE] => (item=3.3.3.3) => {"ansible_loop_var": "item", "changed": false, "item": "3.3.3.3", "msg": "DC-EDGE: neighbour 3.3.3.3 FULL"}
+ok: [HQ-DIST] => (item=1.1.1.1) => {"ansible_loop_var": "item", "changed": false, "item": "1.1.1.1", "msg": "HQ-DIST: neighbour 1.1.1.1 FULL"}
+ok: [HQ-CORE] => (item=1.1.1.4) => {"ansible_loop_var": "item", "changed": false, "item": "1.1.1.4", "msg": "HQ-CORE: neighbour 1.1.1.4 FULL"}
+ok: [FW-EDGE] => (item=1.1.1.1) => {"ansible_loop_var": "item", "changed": false, "item": "1.1.1.1", "msg": "FW-EDGE: neighbour 1.1.1.1 FULL"}
+ok: [HQ-CORE] => (item=2.2.2.2) => {"ansible_loop_var": "item", "changed": false, "item": "2.2.2.2", "msg": "HQ-CORE: neighbour 2.2.2.2 FULL"}
+ok: [HQ-CORE] => (item=4.4.4.4) => {"ansible_loop_var": "item", "changed": false, "item": "4.4.4.4", "msg": "HQ-CORE: neighbour 4.4.4.4 FULL"}
+
+TASK [acl : ACL | management ACLs from template (ACL_VTY + ACL_MGMT)] **********
+changed: [HQ-DIST] => {"banners": {}, "changed": true, "commands": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"], "updates": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"]}
+changed: [HQ-CORE] => {"banners": {}, "changed": true, "commands": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"], "updates": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"]}
+changed: [DC-EDGE] => {"banners": {}, "changed": true, "commands": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"], "updates": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"]}
+changed: [FW-EDGE] => {"banners": {}, "changed": true, "commands": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"], "updates": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"]}
+changed: [BR-EDGE] => {"banners": {}, "changed": true, "commands": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"], "updates": ["ip access-list standard ACL_MGMT", "remark Management subnets - reserved for SNMP/NTP access-group", "permit 10.10.99.0 0.0.0.255", "permit 10.20.30.0 0.0.0.255", "deny   any log"]}
+
+TASK [acl : ACL | read VTY line configuration] *********************************
+ok: [HQ-CORE] => {"changed": false, "stdout": ["line vty 0 4\n access-class ACL_VTY in\n exec-timeout 15 0\n login local\n transport input ssh"], "stdout_lines": [["line vty 0 4", " access-class ACL_VTY in", " exec-timeout 15 0", " login local", " transport input ssh"]]}
+ok: [DC-EDGE] => {"changed": false, "stdout": ["line vty 0 4\n access-class ACL_VTY in\n exec-timeout 15 0\n login local\n transport input ssh"], "stdout_lines": [["line vty 0 4", " access-class ACL_VTY in", " exec-timeout 15 0", " login local", " transport input ssh"]]}
+ok: [FW-EDGE] => {"changed": false, "stdout": ["line vty 0 4\n access-class ACL_VTY in\n exec-timeout 15 0\n login local\n transport input ssh"], "stdout_lines": [["line vty 0 4", " access-class ACL_VTY in", " exec-timeout 15 0", " login local", " transport input ssh"]]}
+ok: [HQ-DIST] => {"changed": false, "stdout": ["line vty 0 4\n access-class ACL_VTY in\n exec-timeout 15 0\n login local\n transport input ssh"], "stdout_lines": [["line vty 0 4", " access-class ACL_VTY in", " exec-timeout 15 0", " login local", " transport input ssh"]]}
+ok: [BR-EDGE] => {"changed": false, "stdout": ["line vty 0 4\n access-class ACL_VTY in\n exec-timeout 15 0\n login local\n transport input ssh"], "stdout_lines": [["line vty 0 4", " access-class ACL_VTY in", " exec-timeout 15 0", " login local", " transport input ssh"]]}
+
+TASK [acl : ACL | assert ACL_VTY is applied inbound on the VTY lines] **********
+ok: [HQ-CORE] => {"changed": false, "msg": "HQ-CORE: ACL_VTY applied to line vty"}
+ok: [DC-EDGE] => {"changed": false, "msg": "DC-EDGE: ACL_VTY applied to line vty"}
+ok: [HQ-DIST] => {"changed": false, "msg": "HQ-DIST: ACL_VTY applied to line vty"}
+ok: [FW-EDGE] => {"changed": false, "msg": "FW-EDGE: ACL_VTY applied to line vty"}
+ok: [BR-EDGE] => {"changed": false, "msg": "BR-EDGE: ACL_VTY applied to line vty"}
+
+RUNNING HANDLER [save config] **************************************************
+ok: [BR-EDGE] => {"changed": false, "stdout": ["Building configuration...\n[OK]"], "stdout_lines": [["Building configuration...", "[OK]"]]}
+ok: [FW-EDGE] => {"changed": false, "stdout": ["Building configuration...\n[OK]"], "stdout_lines": [["Building configuration...", "[OK]"]]}
+ok: [DC-EDGE] => {"changed": false, "stdout": ["Building configuration...\n[OK]"], "stdout_lines": [["Building configuration...", "[OK]"]]}
+fatal: [HQ-DIST]: FAILED! => {"changed": false, "msg": "command timeout triggered, timeout value is 90 secs.\nSee the timeout setting options in the Network Debug and Troubleshooting Guide."}
+fatal: [HQ-CORE]: FAILED! => {"changed": false, "msg": "command timeout triggered, timeout value is 90 secs.\nSee the timeout setting options in the Network Debug and Troubleshooting Guide."}
+
+RUNNING HANDLER [record change] ************************************************
+changed: [DC-EDGE -> localhost] => {"backup": "", "changed": true, "msg": "line added"}
+changed: [BR-EDGE -> localhost] => {"backup": "", "changed": true, "msg": "line added"}
+changed: [FW-EDGE -> localhost] => {"backup": "", "changed": true, "msg": "line added"}
+
+PLAY RECAP *********************************************************************
+BR-EDGE                    : ok=17   changed=4    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+DC-EDGE                    : ok=17   changed=3    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+FW-EDGE                    : ok=17   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+HQ-CORE                    : ok=14   changed=2    unreachable=0    failed=1    skipped=2    rescued=0    ignored=0   
+HQ-DIST                    : ok=15   changed=3    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
+

@@ -1,0 +1,46 @@
+### BR-EDGE - show vlans (2026-09-27)
+Virtual LAN ID:  1 (IEEE 802.1Q Encapsulation)
+
+   vLAN Trunk Interfaces:  FastEthernet1/0
+FastEthernet3/0
+
+ This is configured as native Vlan for the following interface(s) :
+FastEthernet1/0
+FastEthernet3/0
+
+   Protocols Configured:   Address:              Received:        Transmitted:
+        Other                                           0                 898
+
+   72 packets, 24459 bytes input
+   449 packets, 31245 bytes output
+        Other                                           0                 898
+
+   72 packets, 24459 bytes input
+   449 packets, 31245 bytes output
+
+Virtual LAN ID:  40 (IEEE 802.1Q Encapsulation)
+
+   vLAN Trunk Interfaces:  FastEthernet1/0.40
+FastEthernet3/0.40
+
+   Protocols Configured:   Address:              Received:        Transmitted:
+           IP              10.30.40.1                   0                   0
+        Other                                           0                   2
+
+   3 packets, 198 bytes input
+   2 packets, 92 bytes output
+        Other                                           0                   2
+
+   0 packets, 0 bytes input
+   0 packets, 0 bytes output
+
+Virtual LAN ID:  50 (IEEE 802.1Q Encapsulation)
+
+   vLAN Trunk Interface:   FastEthernet1/0.50
+
+   Protocols Configured:   Address:              Received:        Transmitted:
+           IP              10.30.50.1                   0                   0
+        Other                                           0                   2
+
+   2 packets, 132 bytes input
+   2 packets, 92 bytes output

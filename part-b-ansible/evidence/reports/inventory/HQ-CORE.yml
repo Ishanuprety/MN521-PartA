@@ -1,0 +1,10 @@
+hostname: HQ-CORE
+image: tftp://255.255.255.255/unknown
+ios_version: 15.0(1)M
+mem_total_mb: '118.53946304321289'
+mgmt_ip: 1.1.1.1
+model: 7206VXR
+role: Core router (area 0 backbone)
+serial: '4279256517'
+site: HQ
+uptime: 1 hour, 4 minutes

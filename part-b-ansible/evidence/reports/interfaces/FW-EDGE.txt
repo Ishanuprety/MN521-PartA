@@ -1,0 +1,19 @@
+### FW-EDGE - show ip interface brief (2026-09-27)
+Interface                  IP-Address      OK? Method Status                Protocol
+FastEthernet0/0            192.168.122.119 YES DHCP   up                    up      
+FastEthernet1/0            10.255.0.17     YES NVRAM  up                    up      
+FastEthernet2/0            unassigned      YES NVRAM  up                    up      
+FastEthernet2/0.60         10.60.60.1      YES NVRAM  up                    up      
+FastEthernet3/0            unassigned      YES NVRAM  administratively down down    
+Loopback0                  4.4.4.4         YES NVRAM  up                    up      
+NVI0                       4.4.4.4         YES unset  up                    up
+
+### FW-EDGE - show interfaces description
+Interface                      Status         Protocol Description
+Fa0/0                          up             up       OUTSIDE_INTERNET
+Fa1/0                          up             up       INSIDE_HQ-CORE
+Fa2/0                          up             up       DMZ_TRUNK
+Fa2/0.60                       up             up       VLAN60_DMZ
+Fa3/0                          admin down     down     
+Lo0                            up             up       
+NV0                            up             up

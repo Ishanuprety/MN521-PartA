@@ -1,0 +1,15 @@
+### DC-EDGE - show ip interface brief (2026-09-27)
+Interface                  IP-Address      OK? Method Status                Protocol
+FastEthernet0/0            10.255.0.2      YES NVRAM  up                    up      
+FastEthernet1/0            10.255.0.5      YES NVRAM  up                    up      
+FastEthernet2/0            10.20.30.1      YES NVRAM  up                    up      
+FastEthernet3/0            unassigned      YES NVRAM  administratively down down    
+Loopback0                  2.2.2.2         YES NVRAM  up                    up
+
+### DC-EDGE - show interfaces description
+Interface                      Status         Protocol Description
+Fa0/0                          up             up       WAN_TO_HQ-CORE
+Fa1/0                          up             up       WAN_TO_BR-EDGE
+Fa2/0                          up             up       ACCESS_VLAN30_TO_SW-DC-1
+Fa3/0                          admin down     down     
+Lo0                            up             up

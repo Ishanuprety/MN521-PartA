@@ -1,0 +1,24 @@
+### FW-EDGE - show vlans (2026-09-27)
+Virtual LAN ID:  1 (IEEE 802.1Q Encapsulation)
+
+   vLAN Trunk Interface:   FastEthernet2/0
+
+ This is configured as native Vlan for the following interface(s) :
+FastEthernet2/0
+
+   Protocols Configured:   Address:              Received:        Transmitted:
+        Other                                           0                 454
+
+   0 packets, 0 bytes input
+   454 packets, 31685 bytes output
+
+Virtual LAN ID:  60 (IEEE 802.1Q Encapsulation)
+
+   vLAN Trunk Interface:   FastEthernet2/0.60
+
+   Protocols Configured:   Address:              Received:        Transmitted:
+           IP              10.60.60.1                  43                  38
+        Other                                           0                   7
+
+   72 packets, 6780 bytes input
+   45 packets, 3771 bytes output

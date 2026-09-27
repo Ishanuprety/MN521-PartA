@@ -1,0 +1,6 @@
+host,acls,entries,total_matches,vty_acl_applied,interface_acls,missing,result
+HQ-CORE,ACL_MGMT ACL_VTY,6,60,True,-,-,OK
+HQ-DIST,ACL_MGMT ACL_VTY,6,62,True,-,-,OK
+DC-EDGE,ACL_MGMT ACL_DC_IN ACL_VTY,10,9175,True,ACL_DC_IN in,-,OK
+BR-EDGE,ACL_MGMT ACL_GUEST ACL_VTY,11,46,True,ACL_GUEST in,-,OK
+FW-EDGE,10 ACL_MGMT ACL_DMZ_IN ACL_OUTSIDE_IN ACL_VTY,35,5772,True,ACL_OUTSIDE_IN in ACL_DMZ_IN in,-,OK

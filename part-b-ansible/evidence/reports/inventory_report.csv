@@ -1,0 +1,6 @@
+hostname,site,mgmt_ip,model,ios_version,image,serial,uptime,role
+HQ-CORE,HQ,1.1.1.1,7206VXR,15.0(1)M,tftp://255.255.255.255/unknown,4279256517,"1 hour, 4 minutes","Core router (area 0 backbone)"
+HQ-DIST,HQ,1.1.1.4,7206VXR,15.0(1)M,tftp://255.255.255.255/unknown,4279256517,"1 hour, 3 minutes","HQ distribution / inter-VLAN gateway (ABR area 0-10)"
+DC-EDGE,DC,2.2.2.2,7206VXR,15.0(1)M,tftp://255.255.255.255/unknown,4279256517,"1 hour, 4 minutes","DC gateway (VLAN 30 servers), ABR area 0-20"
+BR-EDGE,BRANCH,3.3.3.3,7206VXR,15.0(1)M,tftp://255.255.255.255/unknown,4279256517,"1 hour, 3 minutes","Branch gateway (staff VLAN 40, guest VLAN 50), ABR area 0-30"
+FW-EDGE,EDGE,4.4.4.4,7206VXR,15.0(1)M,tftp://255.255.255.255/unknown,4279256517,"1 hour, 4 minutes","Internet edge / DMZ gateway, NAT, OSPF ASBR"

@@ -1,0 +1,33 @@
+### FW-EDGE - pings from the router (2026-09-27)
+FW-EDGE# ping 10.20.30.11 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 10.20.30.11, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 28/28/28 ms
+
+FW-EDGE# ping 10.20.30.12 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 10.20.30.12, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 28/33/40 ms
+
+FW-EDGE# ping 1.1.1.1 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 1.1.1.1, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 16/17/20 ms
+
+FW-EDGE# ping 8.8.8.8 repeat 3 timeout 1
+Type escape sequence to abort.
+Sending 3, 100-byte ICMP Echos to 8.8.8.8, timeout is 1 seconds:
+!!!
+Success rate is 100 percent (3/3), round-trip min/avg/max = 12/13/16 ms
+
+### control node -> 4.4.4.4
+PING 4.4.4.4 (4.4.4.4) 56(84) bytes of data.
+64 bytes from 4.4.4.4: icmp_seq=1 ttl=253 time=41.5 ms
+64 bytes from 4.4.4.4: icmp_seq=2 ttl=253 time=33.4 ms
+
+--- 4.4.4.4 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 33.361/37.419/41.478/4.058 ms
