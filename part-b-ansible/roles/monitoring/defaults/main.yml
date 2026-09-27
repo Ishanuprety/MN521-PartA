@@ -1,0 +1,6 @@
+---
+cpu_threshold_pct: 80
+mem_threshold_pct: 80
+ping_repeat: 3
+report_subdirs: [interfaces, routing, vlans, acl, resources, connectivity, inventory]
+acl_expected_applied: []

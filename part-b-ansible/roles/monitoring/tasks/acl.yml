@@ -1,0 +1,54 @@
+---
+- name: ACL | collect ACLs and where they are applied
+  cisco.ios.ios_command:
+    commands:
+      - show ip access-lists
+      - show running-config | include ^interface|access-group|access-class
+  register: acl_out
+  changed_when: false
+
+- name: ACL | parse ACL names, entries and hit counts
+  ansible.builtin.set_fact:
+    mon_acl:
+      acls: "{{ acl_out.stdout[0] | regex_findall('(?m)^(?:Standard|Extended) IP access list (\\S+)') }}"
+      entries: "{{ acl_out.stdout[0] | regex_findall('(?m)^\\s+\\d+ (?:permit|deny)') | length }}"
+      hits: "{{ acl_out.stdout[0] | regex_findall('\\((\\d+) match') | map('int') | sum }}"
+      vty_protected: "{{ ('access-class ' ~ vty_acl ~ ' in') in acl_out.stdout[1] }}"
+      applied: "{{ acl_out.stdout[1] | regex_findall('ip access-group (\\S+ \\w+)') }}"
+      expected_applied: "{{ acl_expected_applied }}"
+      missing: "{{ acl_expected_applied | difference(acl_out.stdout[1] | regex_findall('ip access-group (\\S+) \\w+')) }}"
+
+- name: ACL | save raw output (reports/acl/<host>.txt)
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/acl/{{ inventory_hostname }}.txt"
+    mode: "0644"
+    content: |
+      ### {{ inventory_hostname }} - show ip access-lists ({{ run_date }})
+      {{ acl_out.stdout[0] }}
+
+      ### {{ inventory_hostname }} - ACL attachment points
+      {{ acl_out.stdout[1] }}
+  delegate_to: localhost
+
+- name: ACL | write reports/acl_summary.csv
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/acl_summary.csv"
+    mode: "0644"
+    content: |
+      host,acls,entries,total_matches,vty_acl_applied,interface_acls,missing,result
+      {% for h in ansible_play_hosts %}
+      {% set a = hostvars[h].mon_acl %}
+      {{ h }},{{ a.acls | join(' ') }},{{ a.entries }},{{ a.hits }},{{ a.vty_protected }},{{ a.applied | join(' ') or '-' }},{{ a.missing | join(' ') or '-' }},{{ 'OK' if (a.vty_protected | bool and not a.missing) else 'FAIL' }}
+      {% endfor %}
+  delegate_to: localhost
+  run_once: true
+
+- name: ACL | assert VTY ACL and expected interface ACLs are in place
+  ansible.builtin.assert:
+    that:
+      - mon_acl.vty_protected | bool
+      - mon_acl.missing | length == 0
+    success_msg: >-
+      {{ inventory_hostname }}: ACLs {{ mon_acl.acls }}; {{ vty_acl }} on VTY;
+      interface ACLs {{ mon_acl.applied if mon_acl.applied else 'none' }}
+    fail_msg: "{{ inventory_hostname }}: ACL check failed (vty={{ mon_acl.vty_protected }}, missing={{ mon_acl.missing }})"

@@ -1,0 +1,55 @@
+---
+- name: Routing | collect OSPF and routing table
+  cisco.ios.ios_command:
+    commands:
+      - show ip ospf neighbor
+      - show ip route
+      - show ip protocols | include Routing Protocol|Router ID
+  register: rt_out
+  changed_when: false
+
+- name: Routing | parse neighbours and routes
+  ansible.builtin.set_fact:
+    mon_routing:
+      full_neighbors: "{{ rt_out.stdout[0] | regex_findall('(?m)^(\\d+\\.\\d+\\.\\d+\\.\\d+)\\s+\\d+\\s+FULL') }}"
+      expected: "{{ ospf_expected_neighbors | default([]) }}"
+      missing: "{{ ospf_expected_neighbors | default([]) | difference(rt_out.stdout[0] | regex_findall('(?m)^(\\d+\\.\\d+\\.\\d+\\.\\d+)\\s+\\d+\\s+FULL')) }}"
+      ospf_routes: "{{ rt_out.stdout[1] | regex_findall('(?m)^O') | length }}"
+      connected: "{{ rt_out.stdout[1] | regex_findall('(?m)^C\\s') | length }}"
+      last_resort: "{{ rt_out.stdout[1] | regex_findall('Gateway of last resort is (\\S+)') | first | default('none') }}"
+
+- name: Routing | save raw output (reports/routing/<host>.txt)
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/routing/{{ inventory_hostname }}.txt"
+    mode: "0644"
+    content: |
+      ### {{ inventory_hostname }} - show ip ospf neighbor ({{ run_date }})
+      {{ rt_out.stdout[0] }}
+
+      ### {{ inventory_hostname }} - show ip route
+      {{ rt_out.stdout[1] }}
+
+      ### {{ inventory_hostname }} - show ip protocols (filtered)
+      {{ rt_out.stdout[2] }}
+  delegate_to: localhost
+
+- name: Routing | write reports/routing_summary.csv
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/routing_summary.csv"
+    mode: "0644"
+    content: |
+      host,full_neighbors,expected_neighbors,missing,ospf_routes,connected_routes,gateway_of_last_resort,result
+      {% for h in ansible_play_hosts %}
+      {% set r = hostvars[h].mon_routing %}
+      {{ h }},{{ r.full_neighbors | join(' ') }},{{ r.expected | join(' ') }},{{ r.missing | join(' ') or '-' }},{{ r.ospf_routes }},{{ r.connected }},{{ r.last_resort }},{{ 'OK' if not r.missing else 'FAIL' }}
+      {% endfor %}
+  delegate_to: localhost
+  run_once: true
+
+- name: Routing | assert all expected OSPF neighbours are FULL
+  ansible.builtin.assert:
+    that: mon_routing.missing | length == 0
+    success_msg: >-
+      {{ inventory_hostname }}: {{ mon_routing.full_neighbors | length }} FULL neighbour(s)
+      {{ mon_routing.full_neighbors }}, {{ mon_routing.ospf_routes }} OSPF routes, last resort {{ mon_routing.last_resort }}
+    fail_msg: "{{ inventory_hostname }}: missing OSPF neighbours {{ mon_routing.missing }}"

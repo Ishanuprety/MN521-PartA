@@ -1,0 +1,48 @@
+---
+- name: Inventory | gather device facts
+  cisco.ios.ios_facts:
+    gather_subset: [min, hardware]
+
+- name: Inventory | read uptime
+  cisco.ios.ios_command:
+    commands: show version | include uptime
+  register: uptime_out
+  changed_when: false
+
+- name: Inventory | build inventory record
+  ansible.builtin.set_fact:
+    mon_inv:
+      hostname: "{{ ansible_net_hostname }}"
+      site: "{{ site_name }}"
+      role: "{{ device_role }}"
+      mgmt_ip: "{{ ansible_host }}"
+      model: "{{ ansible_net_model | default('n/a') }}"
+      ios_version: "{{ ansible_net_version }}"
+      image: "{{ ansible_net_image | default('n/a') }}"
+      serial: "{{ ansible_net_serialnum | default('n/a') }}"
+      mem_total_mb: "{{ ansible_net_memtotal_mb | default(0) }}"
+      uptime: "{{ uptime_out.stdout[0] | regex_replace('^.*uptime is ', '') }}"
+
+- name: Inventory | save device record (reports/inventory/<host>.yml)
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/inventory/{{ inventory_hostname }}.yml"
+    mode: "0644"
+    content: "{{ mon_inv | to_nice_yaml }}"
+  delegate_to: localhost
+
+- name: Inventory | write reports/inventory_report.csv
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/inventory_report.csv"
+    mode: "0644"
+    content: |
+      hostname,site,mgmt_ip,model,ios_version,image,serial,uptime,role
+      {% for h in ansible_play_hosts %}
+      {% set i = hostvars[h].mon_inv %}
+      {{ i.hostname }},{{ i.site }},{{ i.mgmt_ip }},{{ i.model }},{{ i.ios_version }},{{ i.image }},{{ i.serial }},"{{ i.uptime }}","{{ i.role }}"
+      {% endfor %}
+  delegate_to: localhost
+  run_once: true
+
+- name: Inventory | device summary
+  ansible.builtin.debug:
+    msg: "{{ mon_inv.hostname }} | {{ mon_inv.site }} | {{ mon_inv.model }} | IOS {{ mon_inv.ios_version }} | up {{ mon_inv.uptime }}"

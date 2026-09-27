@@ -1,0 +1,7 @@
+---
+# backup.yml - save every router's running-config to backups/<host>_<date>.cfg
+- name: Configuration backup
+  hosts: routers
+  gather_facts: false
+  roles:
+    - { role: backup, tags: [backup] }

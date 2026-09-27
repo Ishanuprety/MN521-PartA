@@ -1,0 +1,55 @@
+---
+- name: Resources | collect CPU and memory utilisation
+  cisco.ios.ios_command:
+    commands:
+      - show processes cpu | include CPU utilization
+      - show processes memory | include Processor Pool
+  register: res_out
+  changed_when: false
+
+- name: Resources | parse CPU and memory figures
+  ansible.builtin.set_fact:
+    mon_res:
+      cpu_5s: "{{ res_out.stdout[0] | regex_findall('five seconds: (\\d+)%') | first | int }}"
+      cpu_1m: "{{ res_out.stdout[0] | regex_findall('one minute: (\\d+)%') | first | int }}"
+      cpu_5m: "{{ res_out.stdout[0] | regex_findall('five minutes: (\\d+)%') | first | int }}"
+      mem_total: "{{ res_out.stdout[1] | regex_findall('Total:\\s+(\\d+)') | first | int }}"
+      mem_used: "{{ res_out.stdout[1] | regex_findall('Used:\\s+(\\d+)') | first | int }}"
+      mem_free: "{{ res_out.stdout[1] | regex_findall('Free:\\s+(\\d+)') | first | int }}"
+
+- name: Resources | derive memory percentage
+  ansible.builtin.set_fact:
+    mon_res: "{{ mon_res | combine({'mem_used_pct': ((mon_res.mem_used | int) * 100.0 / (mon_res.mem_total | int)) | round(1)}) }}"
+
+- name: Resources | save raw output (reports/resources/<host>.txt)
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/resources/{{ inventory_hostname }}.txt"
+    mode: "0644"
+    content: |
+      ### {{ inventory_hostname }} ({{ run_date }})
+      {{ res_out.stdout[0] }}
+      {{ res_out.stdout[1] }}
+  delegate_to: localhost
+
+- name: Resources | write reports/resources_summary.csv
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/resources_summary.csv"
+    mode: "0644"
+    content: |
+      host,cpu_5s_pct,cpu_1m_pct,cpu_5m_pct,mem_total_bytes,mem_used_bytes,mem_free_bytes,mem_used_pct,result
+      {% for h in ansible_play_hosts %}
+      {% set r = hostvars[h].mon_res %}
+      {{ h }},{{ r.cpu_5s }},{{ r.cpu_1m }},{{ r.cpu_5m }},{{ r.mem_total }},{{ r.mem_used }},{{ r.mem_free }},{{ r.mem_used_pct }},{{ 'OK' if (r.cpu_5m | int) < cpu_threshold_pct and (r.mem_used_pct | float) < mem_threshold_pct else 'WARN' }}
+      {% endfor %}
+  delegate_to: localhost
+  run_once: true
+
+- name: Resources | assert CPU and memory are under threshold
+  ansible.builtin.assert:
+    that:
+      - (mon_res.cpu_5m | int) < cpu_threshold_pct
+      - (mon_res.mem_used_pct | float) < mem_threshold_pct
+    success_msg: >-
+      {{ inventory_hostname }}: CPU 5s/1m/5m {{ mon_res.cpu_5s }}/{{ mon_res.cpu_1m }}/{{ mon_res.cpu_5m }}%,
+      memory {{ mon_res.mem_used_pct }}% used of {{ ((mon_res.mem_total | int) / 1048576) | round(0) | int }} MB
+    fail_msg: "{{ inventory_hostname }}: resource threshold exceeded {{ mon_res }}"

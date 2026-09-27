@@ -1,0 +1,69 @@
+---
+- name: Connectivity | ping from each router to its site targets
+  cisco.ios.ios_command:
+    commands: "{{ site_ping_targets | map('regex_replace', '^', 'ping ') | map('regex_replace', '$', ' repeat ' ~ ping_repeat ~ ' timeout 1') | list }}"
+  register: ping_out
+  changed_when: false
+
+- name: Connectivity | ping each router's management address from the control node
+  ansible.builtin.command: "ping -c 2 -W 2 {{ ansible_host }}"
+  register: ctl_ping
+  delegate_to: localhost
+  changed_when: false
+  failed_when: false
+
+- name: Connectivity | parse success rates
+  ansible.builtin.set_fact:
+    mon_conn:
+      control_node_to_router: "{{ 'OK' if ctl_ping.rc == 0 else 'FAIL' }}"
+      tests: >-
+        {%- set rows = [] -%}
+        {%- for t in site_ping_targets -%}
+        {%- set rate = ping_out.stdout[loop.index0] | regex_findall('Success rate is (\d+) percent') | first | default('0') -%}
+        {%- set _ = rows.append({'target': t, 'success_pct': rate | int, 'result': 'OK' if rate | int > 0 else 'FAIL'}) -%}
+        {%- endfor -%}
+        {{ rows }}
+
+- name: Connectivity | save raw output (reports/connectivity/<host>.txt)
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/connectivity/{{ inventory_hostname }}.txt"
+    mode: "0644"
+    content: |
+      ### {{ inventory_hostname }} - pings from the router ({{ run_date }})
+      {% for t in site_ping_targets %}
+      {{ inventory_hostname }}# ping {{ t }} repeat {{ ping_repeat }} timeout 1
+      {{ ping_out.stdout[loop.index0] }}
+
+      {% endfor %}
+      ### control node -> {{ ansible_host }}
+      {{ ctl_ping.stdout }}
+  delegate_to: localhost
+
+- name: Connectivity | write reports/connectivity_summary.csv
+  ansible.builtin.copy:
+    dest: "{{ report_dir }}/connectivity_summary.csv"
+    mode: "0644"
+    content: |
+      source,target,success_pct,result
+      {% for h in ansible_play_hosts %}
+      control-node,{{ h }} ({{ hostvars[h].ansible_host }}),{{ 100 if hostvars[h].mon_conn.control_node_to_router == 'OK' else 0 }},{{ hostvars[h].mon_conn.control_node_to_router }}
+      {% for t in hostvars[h].mon_conn.tests %}
+      {{ h }},{{ t.target }},{{ t.success_pct }},{{ t.result }}
+      {% endfor %}
+      {% endfor %}
+  delegate_to: localhost
+  run_once: true
+
+- name: Connectivity | report results
+  ansible.builtin.debug:
+    msg: >-
+      {{ inventory_hostname }}: control-node ping {{ mon_conn.control_node_to_router }};
+      {% for t in mon_conn.tests %}{{ t.target }}={{ t.success_pct }}% {% endfor %}
+
+- name: Connectivity | assert all targets answered
+  ansible.builtin.assert:
+    that:
+      - mon_conn.control_node_to_router == 'OK'
+      - mon_conn.tests | selectattr('result', 'eq', 'FAIL') | list | length == 0
+    fail_msg: "{{ inventory_hostname }}: unreachable {{ mon_conn.tests | selectattr('result', 'eq', 'FAIL') | map(attribute='target') | list }}"
+    quiet: true

@@ -1,0 +1,27 @@
+---
+# monitoring.yml - operational verification + reports under reports/
+#   ansible-playbook monitoring.yml                       (all checks)
+#   ansible-playbook monitoring.yml --tags routing,vlans  (selected checks)
+- name: Configuration backup
+  ansible.builtin.import_playbook: backup.yml
+  tags: [backup]
+
+- name: Network verification and monitoring
+  hosts: routers
+  gather_facts: false
+  roles:
+    - { role: monitoring, tags: [monitoring] }
+
+- name: Consolidated monitoring report
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags: [always]
+  tasks:
+    - name: Report | render reports/MONITORING_REPORT.md
+      ansible.builtin.template:
+        src: templates/monitoring_report.md.j2
+        dest: "{{ report_dir }}/MONITORING_REPORT.md"
+        mode: "0644"
+      vars:
+        routers: "{{ groups['routers'] }}"
